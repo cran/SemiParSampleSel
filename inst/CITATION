@@ -1,0 +1,30 @@
+desc <- packageDescription("SemiParSampleSel")
+year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", desc$Date)
+vers <- paste(" R package version", desc$Version)
+
+citEntry(entry="Manual",
+title = "SemiParSampleSel: Semiparametric Sample Selection Modelling with Continuous Response",
+author = "Marra G. and Radice R.",
+year = year,
+note = vers,
+textVersion =
+paste("Marra G. and Radice R. (",year,"). SemiParSampleSel: Semiparametric Sample Selection Modelling with Continuous Response.",vers, ".", sep="")
+)
+
+
+ 
+citEntry(
+  entry="Article",
+  title="Semiparametric Continuous Response Models for Controlling Sample Selection Bias",
+  journal="X",
+  volume= "X",
+  number="X",
+  pages="X",
+  year="X", 
+  author="Marra G. and Radice R.",
+  textVersion="Marra G. and Radice R., Semiparametric Continuous Response Models for Controlling Sample Selection Bias. Submitted."
+ )
+
+
+
+

@@ -1,0 +1,10 @@
+
+exportPattern(".")
+
+import(mgcv, trust, mvtnorm)
+importFrom(magic, adiag)
+
+S3method(plot, SemiParSampleSel)
+S3method(summary, SemiParSampleSel)
+S3method(print, SemiParSampleSel)
+S3method(print, summary.SemiParSampleSel)
