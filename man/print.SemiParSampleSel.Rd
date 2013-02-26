@@ -26,7 +26,7 @@
 
 \details{ 
 
-\code{print.SemiParSampleSel} prints out the family, model equations, total number of observations, estimated sigma and correlation 
+\code{print.SemiParSampleSel} prints out the family, model equations, total number of observations, estimated dispersion and association  
 coefficients and total effective degrees of freedom for the penalized or unpenalized model. 
 
 }
@@ -35,7 +35,7 @@ coefficients and total effective degrees of freedom for the penalized or unpenal
 
 \author{
 
-Maintainer: Giampiero Marra \email{giampiero@stats.ucl.ac.uk}
+Maintainer: Giampiero Marra \email{giampiero.marra@ucl.ac.uk}
 
 }
 

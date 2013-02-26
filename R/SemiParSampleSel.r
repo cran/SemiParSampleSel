@@ -1,181 +1,132 @@
-SemiParSampleSel <- function(formula.eq1, formula.eq2, data=list(), 
-                             iterlimSP=50, pr.tol=1e-6,
-                             gamma=1, aut.sp=TRUE, fp=FALSE, start.v=NULL, rinit=1, rmax=100, 
-                             fterm=sqrt(.Machine$double.eps), mterm=sqrt(.Machine$double.eps), 
+SemiParSampleSel <- function(formula.eq1, formula.eq2, data=list(), weights=NULL, 
+                             BivD="N", margins=c("N","N"), start.theta=NULL, start.v=NULL,
+                             gamma=1, aut.sp=TRUE, fp=FALSE, rinit=1, rmax=100, 
+                             fterm=sqrt(.Machine$double.eps), mterm=sqrt(.Machine$double.eps),
+                             iterlimsp=50, pr.tolsp=1e-6,  
         		     control=list(maxit=50,tol=1e-6,step.half=25,rank.tol=sqrt(.Machine$double.eps)) ){
 
-  conv.sp <- NULL; bs.mgfit <- wor.c <- j.it <- NULL
 
-  #rinit=1;rmax=100;fterm=sqrt(.Machine$double.eps);mterm=sqrt(.Machine$double.eps)
-  #gamma=1;control=list(maxit=50,tol=1e-6,step.half=25,rank.tol=.Machine$double.eps^0.5)
-  #pr.tol=1e-10; data=list()
-  #aut.sp=TRUE; fp=FALSE; start.v=NULL; gcv=FALSE; iterlimFS=1; iterlimSP=25
+  if(margins[1]!="N") stop("Error in margin names.")
+  if(!(margins[2] %in% c("N","G")) ) stop("Error in margin names.")
+  if(margins[2]=="G") stop("Gamma case not finalised yet. Check the next release.")
+  if(!(BivD %in% c("N", "C", "J", "FGM", "F", "AMH", "G"))) stop("Error in parameter BivD value. It should be one of: N, C, J, FGM, F, AMH, G.")
 
-  #library(mgcv)
-  #library(trust)
-  #library(mvtnorm)
+  qu.mag <- sp <- NULL
+  
+  ########################################
+  # Naive models needed for starting point
+  ########################################
 
-  #source("ghss.r")
-  #source("ghss1.r")
-  #source("ghss2.r")
-  #source("spS.r")
-  #source("S.m.r")
-  #source("working.comp.r")
+  gam1 <- eval(substitute(gam(formula.eq1, binomial(link="probit"), gamma=gamma, weights=weights, data=data),list(weights=weights)))
+  y1 <- gam1$y; inde <- y1 > 0
+  if(margins[2]=="N")      gam2 <- eval(substitute(gam(formula.eq2, gamma=gamma, data=data, weights=weights, subset=inde),list(weights=weights,inde=inde)))
+  else if(margins[2]=="G") gam2 <- eval(substitute(gam(formula.eq2, gamma=gamma, data=data, weights=weights, subset=inde, family=Gamma(link = "log")),list(weights=weights,inde=inde))) else stop("Error in margin names.")
 
-  #f1   <- function(x) -(-1+x-1.6*x^2+sin(5*x))    #sin(x)+1.5*exp(-10*x^2) #(0.08*(x^11*(10*(1-x))^6+10*(10*x)^3*(1-x)^10))
-  #f2   <- function(x) 4*x 
-  #f3   <- function(x) (0.08*(x^11*(10*(1-x))^6+10*(10*x)^3*(1-x)^10))
+  ########################################
+  # Data Objects
+  ########################################
 
-  #eps <- rmvnorm(1000, c(0, 0), matrix(c(1, -0.7, -0.7, 1), 2, 2))
-  #xs <- runif(1000)
-  #ys <- f1(xs) + eps[, 1] > 0
-  #xo <- runif(1000)
-  #yoX <- f3(xo) + eps[, 2]
-  #yo <- yoX * (ys > 0)
-
-  #data <- as.data.frame(cbind(ys,yo,xs,xo))
-
-  #formula.eq1 <- ys ~ s(xs) 
-  #formula.eq2 <- yo ~ s(xo)
-
-
-  ################################
-
-  gam1   <- gam(formula.eq1, binomial(link="probit"), gamma=gamma, data=data)
-  inde <- gam1$y > 0
-  environment(formula.eq2) <- environment(NULL)
-  gam2  <- gam(formula.eq2, gamma=gamma, data=data, subset=inde)
-  environment(gam2$formula) <- environment(gam1$formula)
-
-  X1 <- model.matrix(gam1); X1.d2 <- dim(X1)[2]; X2.d2 <- length(coef(gam2))
-  X2 <- matrix(0,length(inde),X2.d2,dimnames = list(c(1:length(inde)),c(names(coef(gam2)))) )
+  n <- length(inde)
+  X1 <- model.matrix(gam1);  X1.d2 <- dim(X1)[2];  X2.d2 <- length(coef(gam2))
+  X2 <- matrix(0,n,X2.d2,dimnames = list(c(1:n),c(names(coef(gam2)))) )
   X2[inde, ] <- model.matrix(gam2)
-  y2 <- rep(0,length(inde)); y2[inde] <- gam2$y
+  y2 <- rep(0,n); y2[inde] <- gam2$y
   l.sp1 <- length(gam1$smooth); l.sp2 <- length(gam2$smooth)
-  dat <- cbind(gam1$y,y2,X1,X2); n <- length(dat[,1])
+  if(is.null(weights)) weights <- rep(1,length(gam1$y)) else weights <- model.weights(gam1$model) 
+  if( (l.sp1!=0 || l.sp2!=0) && fp==FALSE) qu.mag <- S.m(gam1,gam2,l.sp1,l.sp2)
+
+  ############################################
+  # Heckmann's procedure for linear predictors
+  ############################################
 
   p.g1 <- predict(gam1)
-  imr <- dnorm(p.g1)/pnorm(p.g1)
+  imr <- data$imr <- dnorm(p.g1)/pnorm(p.g1)
 
   formula.eq2.1 <- update.formula(formula.eq2, ~. + imr)
-  environment(formula.eq2.1) <- environment(NULL)
+  if(margins[2]=="N")      gam2.1 <- eval(substitute(gam(formula.eq2.1, gamma=gamma, data=data, weights=weights, subset=inde),list(weights=weights,inde=inde)))
+  else if(margins[2]=="G") gam2.1 <- eval(substitute(gam(formula.eq2.1, gamma=gamma, data=data, weights=weights, subset=inde, family=Gamma(link = "log")),list(weights=weights,inde=inde)))
 
-  gam2.1 <- gam(formula.eq2.1, gamma=gamma, data=data, subset=inde) 
-  environment(gam2.1$formula) <- environment(gam1$formula)
-  
   sigma <- sqrt(mean(resid(gam2.1)^2)+mean(imr[inde]*(imr[inde]+p.g1[inde]))*gam2.1$coef["imr"]^2)[[1]]; names(sigma) <- "sigma"
-  co  <- (gam2.1$coef["imr"]/sigma)[[1]]
+  co  <- (gam2.1$coef["imr"]/sigma)[[1]] 
 
-  rho <- ifelse( abs(co) > 0.99, sign(co)*0.95, co); names(rho) <- "rho"
+  if(margins[2]=="G") { k <- (summary(gam2)$dispersion)^(-1); names(k) <- "shape" }
 
-  sp <- c(gam1$sp,gam2.1$sp)
+  	if(l.sp1!=0 && l.sp2!=0) sp <- c(gam1$sp,gam2.1$sp)
+  	if(l.sp1==0 && l.sp2!=0) sp <- c(gam2.1$sp)
+        if(l.sp1!=0 && l.sp2==0) sp <- c(gam1$sp)
 
-  if(is.null(start.v)) start.v <- c(coef(gam1),coef(gam2.1)[names(coef(gam2.1))!="imr"],log(sigma),atanh(rho))
+  ########################################
+  # Starting value for theta
+  ########################################
 
-  if(l.sp1!=0 && l.sp2!=0 && fp==FALSE){S <- spS(sp,gam1,gam2); qu.mag <- S.m(gam1,gam2)}
-
-  fit  <- trust(ghss, start.v, rinit=rinit, rmax=rmax, dat=dat,
-                X1.d2=X1.d2, X2.d2=X2.d2, S=S, gam1=gam1, gam2=gam2, fp=fp, blather=TRUE, 
-                fterm=fterm, mterm=mterm, iterlim=1e+4)
+  a.theta <- st.theta.star(start.theta, co, BivD);  names(a.theta) <- "theta.star"
 
 
-    if(aut.sp==TRUE){
+  if(margins[2]=="N") { 
+        if(is.null(start.v)) start.v <- c(coef(gam1),coef(gam2.1)[names(coef(gam2.1))!="imr"],log(sigma),a.theta)
+        names(start.v)[length(start.v)-1] <- "log.sigma"
+  }
+  
+  if(margins[2]=="G") {
+        if(is.null(start.v)) start.v <- c(coef(gam1),coef(gam2.1)[names(coef(gam2.1))!="imr"],log(k),a.theta)
+        names(start.v)[length(start.v)-1] <- "log.shape"
+  }
 
-     l.o <- fit$l; l.n <- 0 
 
-     exl <- (length(start.v)-1):length(start.v)
-     coef.v <- c(fit$argument[exl]) 
-     coef.p <- c(fit$argument[-exl])
 
-      if(l.sp1!=0 && l.sp2!=0){
+  ########################################
+  # Fitting procedure
+  ########################################
 
-       j.it <- 1; conv.sp <- TRUE 
+  fit <- fit.SemiParSampleSel( dat=cbind(y1,y2), X1=X1, X2=X2, qu.mag=qu.mag, sp=sp, X1.d2=X1.d2, X2.d2=X2.d2, gp1=gam1$nsdf, gp2=gam2$nsdf, n=n,
+                          l.sp1=l.sp1, l.sp2=l.sp2, weights=weights, iterlimSP=iterlimsp, pr.tol=pr.tolsp, BivD=BivD, margins=margins,
+                          aut.sp=aut.sp, gamma=gamma, fp=fp, start.v=start.v, rinit=rinit, rmax=rmax, fterm=fterm, mterm=mterm, control=control )
 
-	  while( abs(l.n-l.o)/abs(l.o) > pr.tol){   
-
-                 fit  <- trust(ghss1, coef.p, rinit=rinit, rmax=rmax, dat=dat, exl1=coef.v[1], exl2=coef.v[2], dat1=fit$dat1, dat2=fit$dat2,
-                     X1.d2=X1.d2, X2.d2=X2.d2, S=S, gam1=gam1, gam2=gam2, fp=fp, blather=TRUE, iterlim=1e+4, 
-                     fterm=fterm, mterm=mterm)
-
-                 So <- spS(sp,gam1,gam2); coef.p <- fit$argument
-
-		 wor.c    <- try(working.comp(fit,X1,X2,X1.d2,X2.d2,n))
-                 if(class(wor.c)=="try-error") break
-             
+  He <- fit$fit$hessian
+  He.eig <- eigen(He,symmetric=TRUE)
+  k.e <- sum(as.numeric(He.eig$val<sqrt(.Machine$double.eps)))
    
-                 bs.mgfit <- try(magic(y=wor.c$rW.Z,X=wor.c$rW.X,sp=sp,S=qu.mag$Ss,
-                                    off=qu.mag$off,rank=qu.mag$rank,n.score=2*n,
-                                    gcv=FALSE,gamma=gamma,control=control))
-                 if(class(bs.mgfit)=="try-error") {conv.sp <- FALSE; break} 
-
-                 sp <- bs.mgfit$sp
-                   
-             S <- spS(sp,gam1,gam2)
-             l.o <- fit$l
-
-             fit  <- try(trust(ghss1, coef.p, rinit=rinit, rmax=rmax, dat=dat, exl1=coef.v[1], exl2=coef.v[2], dat1=fit$dat1, dat2=fit$dat2,
-                           X1.d2=X1.d2, X2.d2=X2.d2, S=S, gam1=gam1, gam2=gam2, fp=fp, blather=TRUE, iterlim=1e+4, 
-                           fterm=fterm, mterm=mterm),silent=TRUE)
-
-             if(class(fit)=="try-error"){ 
-               fit  <- trust(ghss1, coef.p, rinit=rinit, rmax=rmax, dat=dat, exl1=coef.v[1], exl2=coef.v[2], dat1=fit$dat1, dat2=fit$dat2,
-                           X1.d2=X1.d2, X2.d2=X2.d2, S=So, gam1=gam1, gam2=gam2, fp=fp, blather=TRUE, iterlim=1e+4, 
-                           fterm=fterm, mterm=mterm)
-               conv.sp <- FALSE
-               break
-              }
-
-             coef.p <- fit$argument
-             l.n <- fit$l
-
-             fit  <- trust(ghss2, coef.v, rinit=rinit, rmax=rmax, dat=dat, params.f=coef.p, dat1=fit$dat1, dat2=fit$dat2, 
-                           X1.d2=X1.d2, X2.d2=X2.d2, gam1=gam1, gam2=gam2, fp=fp, blather=TRUE, iterlim=1e+4, 
-                           fterm=fterm, mterm=mterm)
-
-             coef.v <- fit$argument
-
-
-             if(j.it>iterlimSP){
-              conv.sp <- FALSE
-              break
-             }
-             j.it <- j.it + 1       
-           
-        }
-      }
-      
-  up.start.v <- c(coef.p,coef.v) 
-  fit  <- trust(ghss, up.start.v, rinit=rinit, rmax=rmax, dat=dat,
-                X1.d2=X1.d2, X2.d2=X2.d2, S=S, gam1=gam1, gam2=gam2, fp=fp, blather=TRUE, 
-                fterm=fterm, mterm=mterm, iterlim=1e+4)
-   }
-
-
-    He <- fit$hessian
-    He.eig <- eigen(He)
-    k.e <- sum(as.numeric(He.eig$val<sqrt(.Machine$double.eps)))
-    
-     if(k.e!=0){
+  if(k.e!=0){
       ind.e <- (length(He.eig$val)-(k.e-1)):length(He.eig$val)
       min.e <- min(He.eig$val[1:(ind.e[1]-1)])
       for(i in 1:k.e) He.eig$val[ind.e[i]] <- min.e/10^i  
       Vb <- He.eig$vec%*%diag(1/He.eig$val)%*%t(He.eig$vec)      
-     }else{
+  }
+  else {
       Vb <- He.eig$vec%*%diag(1/He.eig$val)%*%t(He.eig$vec) 
-    }
-             
-  if(l.sp1!=0 && l.sp2!=0 && fp==FALSE){HeSh <- He - fit$S.h; F <- Vb%*%HeSh} else{HeSh <- He; F <- Vb%*%HeSh}      
+  }
+         
+  if((l.sp1!=0 || l.sp2!=0) && fp==FALSE){ HeSh <- He - fit$fit$S.h; F <- Vb%*%HeSh } else { HeSh <- He; F <- diag(rep(1,dim(Vb)[1])) }      
   t.edf <- sum(diag(F))
 
-L <- list(fit=fit, gam1=gam1, gam2=gam2, gam2.1=gam2.1, sp=sp, iter.sp=j.it, start.v=start.v,
-          sigma=exp(fit$argument[length(fit$argument)-1]), rho=tanh(fit$argument[length(fit$argument)]), 
-          n=n, n.sel=length(gam2$y), X1=X1, X2=X2, X1.d2=X1.d2, X2.d2=X2.d2, 
-          l.sp1=l.sp1, l.sp2=l.sp2, He=He, HeSh=HeSh, Vb=Vb, F=F, 
-          t.edf=t.edf, bs.mgfit=bs.mgfit, conv.sp=conv.sp, wor.c=wor.c, eta1=fit$eta1, eta2=fit$eta2, dat=dat)
+
+  ###########################################################################
+  # Transforming theta back to its original scale and computing Kendall's tau
+  ###########################################################################
+
+  theta <- theta.tau(BivD=BivD, theta.star=fit$fit$argument["theta.star"])
+  KendTau <- theta[2]
+  theta   <- theta[1]
+
+  names(theta) <- names(KendTau) <- NULL
+
+  if(margins[2]=="N") { sigma <- exp(fit$fit$argument["log.sigma"]); names(sigma) <- k <- NULL; phi <- sigma^2 }  # dispersion: variance for normal case
+  if(margins[2]=="G") { k     <- exp(fit$fit$argument["log.shape"]); names(k) <- sigma <- NULL; phi <- k^{-1} }   # dispersion: 1/k for gamma case
 
 
-class(L) <- "SemiParSampleSel"
+  ###########################################################################
+  # Final object
+  ###########################################################################
 
-L
+       L <- list(fit=fit$fit, gam1=gam1, gam2=gam2, gam2.1=gam2.1, coefficients=fit$fit$argument, weights=weights, sp=fit$sp, 
+            iter.if=fit$iter.if, iter.sp=fit$iter.sp, iter.fi=fit$iter.fi, start.v=start.v, phi=phi, sigma=sigma, shape=k, theta=theta, tau=KendTau, 
+            n=n, n.sel=length(gam2$y), X1=X1, X2=X2, X1.d2=X1.d2, X2.d2=X2.d2, 
+            l.sp1=l.sp1, l.sp2=l.sp2, He=He, HeSh=HeSh, Vb=Vb, F=F, BivD=BivD, margins=margins,
+            t.edf=t.edf, bs.mgfit=fit$bs.mgfit, conv.sp=fit$conv.sp, wor.c=fit$wor.c, eta1=fit$fit$eta1, eta2=fit$fit$eta2, 
+            y1=y1, y2=y2, logL=fit$fit$l, fp=fp )
+
+  class(L) <- "SemiParSampleSel"
+
+  L
 
 }

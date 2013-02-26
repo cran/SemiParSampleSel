@@ -3,8 +3,12 @@ exportPattern(".")
 
 import(mgcv, trust, mvtnorm)
 importFrom(magic, adiag)
+importFrom(copula, iRho, iTau, tau)
 
 S3method(plot, SemiParSampleSel)
 S3method(summary, SemiParSampleSel)
 S3method(print, SemiParSampleSel)
 S3method(print, summary.SemiParSampleSel)
+
+
+

@@ -30,13 +30,14 @@ When comparing fitted objects, the smaller the chosen criterion, the better the 
 \value{
 
 It returns a numeric value corresponding to the selected criterion.
+
 }
 
 
 
 \author{
 
-Maintainer: Giampiero Marra \email{giampiero@stats.ucl.ac.uk}
+Maintainer: Giampiero Marra \email{giampiero.marra@ucl.ac.uk}
 
 }
 
@@ -54,6 +55,7 @@ Maintainer: Giampiero Marra \email{giampiero@stats.ucl.ac.uk}
 \keyword{semiparametric sample selection modelling} 
 \keyword{sample selection model} 
 \keyword{information criterion} 
+\keyword{variable selection} 
 
 
 

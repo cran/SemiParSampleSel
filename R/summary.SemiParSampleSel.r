@@ -51,89 +51,92 @@ summary.SemiParSampleSel <- function(object,n.sim=1000,s.meth="svd",sig.lev=0.05
       d <- sum(d^2)
       attr(d, "rank") <- rank
       d
-}
+  }
 
   F  <- object$F
-  Vf <- object$Vb
+  Vr <- object$Vb
           
-  SE <- sqrt(diag(Vf))
+  SE <- sqrt(diag(Vr))
   n  <- object$n 
 
-  bs <- rmvnorm(n.sim, mean = object$fit$argument, sigma=object$Vb, method=s.meth)
+  bs <- rmvnorm(n.sim, mean = coef(object), sigma=object$Vb, method=s.meth)
   d.sig <- dim(object$Vb)[1]-1
   d.rho <- dim(object$Vb)[1]
-  est.SIGb <- est.RHOb <- rep(NA,n.sim)
-  for(i in 1:n.sim){ est.SIGb[i] <- exp(bs[i,d.sig]); est.RHOb[i] <- tanh(bs[i,d.rho]) }
-  CIsi <- as.numeric(quantile(est.SIGb,c(sig.lev/2,1-sig.lev/2)))
-  CIrs <- as.numeric(quantile(est.RHOb,c(sig.lev/2,1-sig.lev/2)))
+  est.SIGb <- est.THETAb <- est.KeTb <- rep(NA,n.sim)
 
-  estimate1 <- object$fit$argument[1:object$gam1$nsdf]
-  se1       <- SE[1:object$gam1$nsdf]
-  ratio1    <- estimate1/se1
-  pv1       <- 2*pnorm(abs(ratio1), lower.tail = FALSE)
-  table1    <- cbind(estimate1,se1,ratio1,pv1)
+  for(i in 1:n.sim){ 
+      est.SIGb[i] <- exp(bs[i,d.sig])
+        if(object$BivD=="N")   { est.THETAb[i] <- tanh(bs[i,d.rho]);	est.KeTb[i] <- tau(normalCopula(est.THETAb[i]))	}
+        if(object$BivD=="C")   { est.THETAb[i] <- exp(bs[i,d.rho]);	est.KeTb[i] <- tau(claytonCopula(est.THETAb[i]))}
+        if(object$BivD=="J")   { est.THETAb[i] <- 1+exp(bs[i,d.rho]);	est.KeTb[i] <- tau(joeCopula(est.THETAb[i]))	}  
+	if(object$BivD=="FGM") { est.THETAb[i] <- tanh(bs[i,d.rho]);	est.KeTb[i] <- tau(fgmCopula(est.THETAb[i]))	}
+	if(object$BivD=="F")   { est.THETAb[i] <- bs[i,d.rho];		est.KeTb[i] <- tau(frankCopula(est.THETAb[i]))	}
+	if(object$BivD=="AMH") { est.THETAb[i] <- tanh(bs[i,d.rho]);	est.KeTb[i] <- tau(amhCopula(est.THETAb[i]))	}
+        if(object$BivD=="G")   { est.THETAb[i] <- 1+exp(bs[i,d.rho]);	est.KeTb[i] <- tau(gumbelCopula(est.THETAb[i]))	}  
+  }
 
-  estimate2 <- object$fit$argument[object$X1.d2+(1:object$gam2$nsdf)]
-  se2       <- SE[object$X1.d2+(1:object$gam2$nsdf)]
-  ratio2    <- estimate2/se2
-  pv2       <- 2*pnorm(abs(ratio2), lower.tail = FALSE)
-  table2    <- cbind(estimate2,se2,ratio2,pv2)
+  CIphi <- as.numeric(quantile(est.SIGb,c(sig.lev/2,1-sig.lev/2),na.rm=TRUE))
+  CIth  <- as.numeric(quantile(est.THETAb,c(sig.lev/2,1-sig.lev/2),na.rm=TRUE))
+  CIkt  <- as.numeric(quantile(est.KeTb,c(sig.lev/2,1-sig.lev/2),na.rm=TRUE))
 
-  dimnames(table1)[[2]] <- c("Estimate", "Std. Error", "z value", "Pr(>|z|)")
-  dimnames(table2)[[2]] <- c("Estimate", "Std. Error", "z value", "Pr(>|z|)")
+  tableN <- list(NULL,NULL)
+  table  <- list()
+  
+  ind <- list(ind1=1:1:object$gam1$nsdf, ind2=object$X1.d2+(1:object$gam2$nsdf) )
 
-  if(object$l.sp1!=0 && object$l.sp2!=0){
-  	pTerms.df1 <- pTerms.chi.sq1 <- pTerms.pv1 <- edf1 <- NA
-  	pTerms.df2 <- pTerms.chi.sq2 <- pTerms.pv2 <- edf2 <- NA
-		for(k in 1:length(object$gam1$smooth)){
-			ind <- object$gam1$smooth[[k]]$first.para:object$gam1$smooth[[k]]$last.para
-			edf1[k] <- sum(diag(F)[ind])
-			names(edf1)[k] <- object$gam1$smooth[[k]]$label 
-			b  <- object$fit$argument[ind]
-			V  <- Vf[ind,ind]
-			Xt <- object$X1[, 1:length(ind)+object$gam1$nsdf]
-			pTerms.df1[k] <- min(ncol(Xt), edf1[k])
-			pTerms.chi.sq1[k] <- Tp <- testStat(b, Xt, V, pTerms.df1[k])
-			pTerms.df1[k] <- attr(Tp, "rank")
-                        pTerms.pv1[k] <- pchisq(pTerms.chi.sq1[k], df = pTerms.df1[k], lower.tail = FALSE)			
-            }
-  	table1.1 <- cbind(edf1, pTerms.df1, pTerms.chi.sq1, pTerms.pv1)
-
-		for(k in 1:length(object$gam2$smooth)){
-			ind <- (object$gam2$smooth[[k]]$first.para:object$gam2$smooth[[k]]$last.para)+object$X1.d2
-			edf2[k] <- sum(diag(F)[ind])
-			names(edf2)[k] <- object$gam2$smooth[[k]]$label 
-			b  <- object$fit$argument[ind]
-			V  <- Vf[ind,ind]
-			Xt <- object$X2[, 1:length(ind)+object$gam2$nsdf]
-			pTerms.df2[k] <- min(ncol(Xt), edf2[k])
-			pTerms.chi.sq2[k] <- Tp <- testStat(b, Xt, V, pTerms.df2[k])   
-			pTerms.df2[k] <- attr(Tp, "rank")
-			pTerms.pv2[k] <- pchisq(pTerms.chi.sq2[k], df = pTerms.df2[k], lower.tail = FALSE)
-		}
-	table2.2 <- cbind(edf2, pTerms.df2, pTerms.chi.sq2, pTerms.pv2)
-  dimnames(table1.1)[[2]] <- c("edf", "Est.rank", "Chi.sq", "p-value")
-  dimnames(table2.2)[[2]] <- c("edf", "Est.rank", "Chi.sq", "p-value")
+  for(i in 1:2){
+       estimate <- coef(object)[ind[[i]]]
+       se       <- SE[ind[[i]]]
+       ratio    <- estimate/se
+       pv       <- 2*pnorm(abs(ratio), lower.tail = FALSE)
+       table[[i]] <- cbind(estimate,se,ratio,pv)
+       dimnames(table[[i]])[[2]] <- c("Estimate", "Std. Error", "z value", "Pr(>|z|)")
   }
 
 
-  if(object$l.sp1!=0 && object$l.sp2!=0){res <- list(tableP1=table1, tableP2=table2, 
-                                           tableNP1=table1.1, tableNP2=table2.2, 
-                                           n=n, sigma=object$sigma, rho=object$rho, 
-                                           formula1=object$gam1$formula, formula2=object$gam2$formula, 
-                                           l.sp1=object$l.sp1, l.sp2=object$l.sp2, 
-                                           t.edf=object$t.edf, CIsi=CIsi, CIrs=CIrs, n.sel=object$n.sel)
-                               class(res) <- "summary.SemiParSampleSel"
-                               res
+  if((object$l.sp1!=0 || object$l.sp2!=0)){
+  
+    	pTerms.df <- pTerms.chi.sq <- pTerms.pv <- edf <- tableN <- list(0,0)
+          
+             for(i in 1:2){
+
+             if(i==1) {mm <- object$l.sp1; if(mm==0) next}
+             if(i==2) {mm <- object$l.sp2; if(mm==0) break}
+    
+  		for(k in 1:mm){
+  
+                        if(i==1){gam <- object$gam1; ind <- (gam$smooth[[k]]$first.para):(gam$smooth[[k]]$last.para)} 
+                            else{gam <- object$gam2; ind <- (gam$smooth[[k]]$first.para:gam$smooth[[k]]$last.para)+object$X1.d2}
+  			edf[[i]][k] <- sum(diag(F)[ind])
+  			names(edf[[i]])[k] <- gam$smooth[[k]]$label 
+  			b  <- coef(object)[ind]
+  			V  <- Vr[ind,ind]
+  			if(i==1) Xt <- object$X1[, 1:length(ind)+gam$nsdf] else Xt <- object$X2[, 1:length(ind)+gam$nsdf]
+  			pTerms.df[[i]][k] <- min(ncol(Xt), edf[[i]][k])
+  			pTerms.chi.sq[[i]][k] <- Tp <- testStat(b, Xt, V, pTerms.df[[i]][k])
+  			pTerms.df[[i]][k] <- attr(Tp, "rank")
+                        pTerms.pv[[i]][k] <- pchisq(pTerms.chi.sq[[i]][k], df = pTerms.df[[i]][k], lower.tail = FALSE)
+  			                 
+                }
+                tableN[[i]] <- cbind(edf[[i]], pTerms.df[[i]], pTerms.chi.sq[[i]], pTerms.pv[[i]])
+                dimnames(tableN[[i]])[[2]] <- c("edf", "Est.rank", "Chi.sq", "p-value")
+             }
+  
   }
-  else{res <- list(tableP1=table1,tableP2=table2, 
-                   n=n, sigma=object$sigma, rho=object$rho, 
-                   formula1=object$gam1$formula, formula2=object$gam2$formula, 
-                   l.sp1=0, l.sp2=0, 
-                   t.edf=object$t.edf, CIsi=CIsi, CIrs=CIrs, n.sel=object$n.sel)
-       class(res) <- "summary.SemiParSampleSel"
-       res
-  }
+  
+
+     res <- list(tableP1=table[[1]], tableP2=table[[2]], 
+                 tableNP1=tableN[[1]], tableNP2=tableN[[2]], 
+                 n=n, phi=object$phi, sigma=object$sigma, shape=object$shape, theta=object$theta, tau=object$tau, 
+                 formula1=object$gam1$formula, formula2=object$gam2$formula, 
+                 l.sp1=object$l.sp1, l.sp2=object$l.sp2, 
+                 t.edf=object$t.edf, CIsig=CIphi, CIshape=CIphi, CIth=CIth, CIkt=CIkt, BivD=object$BivD, margins=object$margins, n.sel=object$n.sel)
+  
+
+  class(res) <- "summary.SemiParSampleSel"
+
+  res
+
 
 }
 

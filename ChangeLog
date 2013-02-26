@@ -1,3 +1,7 @@
+version 1.0
+- prediction function included.
+- bivariate copula errors for normal margins implemented.
+
 version 0.1
 - initial release.
 

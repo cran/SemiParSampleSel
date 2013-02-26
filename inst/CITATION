@@ -15,16 +15,13 @@ paste("Marra G. and Radice R. (",year,"). SemiParSampleSel: Semiparametric Sampl
  
 citEntry(
   entry="Article",
-  title="Semiparametric Continuous Response Models for Controlling Sample Selection Bias",
-  journal="X",
+  title="Estimation of a Regression Spline Sample Selection Model",
+  journal="Computational Statistics and Data Analysis",
   volume= "X",
   number="X",
   pages="X",
   year="X", 
   author="Marra G. and Radice R.",
-  textVersion="Marra G. and Radice R., Semiparametric Continuous Response Models for Controlling Sample Selection Bias. Submitted."
+  textVersion="Marra G. and Radice R. (in press), Estimation of a Regression Spline Sample Selection Model, Computational Statistics and Data Analysis."
  )
-
-
-
 

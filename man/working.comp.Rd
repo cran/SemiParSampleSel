@@ -11,7 +11,7 @@ procedure by exploiting the band structure of the weight matrix.}
 
 \author{
 
-Maintainer: Giampiero Marra \email{giampiero@stats.ucl.ac.uk}
+Maintainer: Giampiero Marra \email{giampiero.marra@ucl.ac.uk}
 
 }
 
@@ -19,7 +19,7 @@ Maintainer: Giampiero Marra \email{giampiero@stats.ucl.ac.uk}
 
 \references{
 
-Marra G. and Radice R. (submitted), Semiparametric Continuous Response Models for Controlling Sample Selection Bias.
+Marra G. and Radice R. (in press), Estimation of a Regression Spline Sample Selection Model. \emph{Computational Statistics and Data Analysis}.
 
 }
 
