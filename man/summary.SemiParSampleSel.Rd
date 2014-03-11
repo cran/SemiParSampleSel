@@ -9,7 +9,7 @@ It takes a fitted \code{SemiParSampleSel} object produced by \code{SemiParSample
 
 \usage{
 
-\method{summary}{SemiParSampleSel}(object,n.sim=1000,s.meth="svd",sig.lev=0.05,...)
+\method{summary}{SemiParSampleSel}(object, n.sim = 1000, s.meth = "svd", prob.lev = 0.05, ...)
 
 
 }
@@ -24,7 +24,7 @@ to calculate `confidence' intervals for \eqn{\theta}{\theta} and \eqn{\phi}{\phi
 
 \item{s.meth}{Matrix decomposition used to determine the matrix root of the covariance matrix. See the documentation of \code{mvtnorm} for further details.} 
 
-\item{sig.lev}{Significance level used for intervals obtained via posterior simulation.} 
+\item{prob.lev}{Probability of the left and right tails of the posterior distribution used for interval calculations.} 
 
 \item{...}{Other arguments.}
 
@@ -40,9 +40,11 @@ corresponding Bayesian covariance matrix, and let \eqn{{\bf V}_f^{r-}}{V_f^{r-}}
 the rank \eqn{r}{r} pseudoinverse of \eqn{{\bf V}_f}{V_f}. The statistic used 
 is \eqn{T=\hat{\bf f}^\prime {\bf V}_f^{r-} \hat{\bf f}}. This is 
 compared to a chi-squared distribution with degrees of freedom given by \eqn{r}{r}, which is obtained by 
-biased rounding of the estimated degrees of freedom. See Marra (2013) for further details. 
+biased rounding of the estimated degrees of freedom.
 
-Note that covariate selection can also be achieved using a single penalty shrinkage approach as shown in Marra and Wood (2011). 
+Covariate selection can also be achieved using a single penalty shrinkage approach as shown in Marra and Wood (2011). 
+
+See Wojtys et al. (submitted) for further details.
 
 }
 
@@ -79,12 +81,11 @@ Note that covariate selection can also be achieved using a single penalty shrink
 
 \references{
 
-Marra G. (2013), On P-values for Semiparametric Bivariate Probit Models. \emph{Statistical Methodology}, 10(1), 23-28.
-
 Marra G. and Wood S.N. (2011), Practical Variable Selection for Generalized Additive Models. \emph{Computational Statistics and Data Analysis}, 55(7), 2372-2387.
 
 Marra G. and Wood S.N. (2012), Coverage Properties of Confidence Intervals for Generalized Additive Model Components. \emph{Scandinavian Journal of Statistics}, 39(1), 53-74.
 
+Wojtys M., Marra G. and Radice R. (submitted), Copula Regression Spline Sample Selection Models: The R Package SemiParSampleSel.
 
 }
 
@@ -99,7 +100,7 @@ Maintainer: Giampiero Marra \email{giampiero.marra@ucl.ac.uk}
 
 
 \seealso{
-\code{\link{InfCr}}, \code{\link{SemiParSampleSelObject}}, \code{\link{plot.SemiParSampleSel}}, \code{\link{predict.SemiParSampleSel}}
+\code{\link{SemiParSampleSelObject}}, \code{\link{plot.SemiParSampleSel}}, \code{\link{predict.SemiParSampleSel}}
 }
 
 \examples{

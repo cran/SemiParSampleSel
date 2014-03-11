@@ -1,3 +1,7 @@
+version 1.1
+- 90 degrees rotated version of Clayton, Joe, and Gumbel implemented.
+- derivative functions re-written more efficiently.
+
 version 1.0
 - prediction function included.
 - bivariate copula errors for normal margins implemented.

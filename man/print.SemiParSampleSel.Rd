@@ -8,7 +8,7 @@
 \usage{
 
 
-\method{print}{SemiParSampleSel}(x,...)
+\method{print}{SemiParSampleSel}(x, ...)
 
 
 }

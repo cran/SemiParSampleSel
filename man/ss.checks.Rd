@@ -40,8 +40,7 @@ Maintainer: Giampiero Marra \email{giampiero.marra@ucl.ac.uk}
 
 
 \keyword{semiparametric sample selection modelling} 
-
-
+\keyword{diagnostics} 
 
 
 

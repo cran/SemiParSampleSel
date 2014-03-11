@@ -4,24 +4,22 @@ vers <- paste(" R package version", desc$Version)
 
 citEntry(entry="Manual",
 title = "SemiParSampleSel: Semiparametric Sample Selection Modelling with Continuous Response",
-author = "Marra G. and Radice R.",
+author = "Marra G., Radice R. and Wojtys M.",
 year = year,
 note = vers,
 textVersion =
-paste("Marra G. and Radice R. (",year,"). SemiParSampleSel: Semiparametric Sample Selection Modelling with Continuous Response.",vers, ".", sep="")
+paste("Marra G., Radice R. and Wojtys M. (",year,"). SemiParSampleSel: Semiparametric Sample Selection Modelling with Continuous Response.",vers, ".", sep="")
 )
 
 
- 
 citEntry(
   entry="Article",
   title="Estimation of a Regression Spline Sample Selection Model",
   journal="Computational Statistics and Data Analysis",
-  volume= "X",
-  number="X",
-  pages="X",
-  year="X", 
+  volume= "61",
+  pages="158-173",
+  number="",
+  year="2013", 
   author="Marra G. and Radice R.",
-  textVersion="Marra G. and Radice R. (in press), Estimation of a Regression Spline Sample Selection Model, Computational Statistics and Data Analysis."
+  textVersion="Marra G. and Radice R. (2013), Estimation of a Regression Spline Sample Selection Model, Computational Statistics and Data Analysis, 61, 158-173."
  )
-

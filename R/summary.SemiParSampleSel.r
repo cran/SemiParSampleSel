@@ -1,4 +1,4 @@
-summary.SemiParSampleSel <- function(object,n.sim=1000,s.meth="svd",sig.lev=0.05,...){
+summary.SemiParSampleSel <- function(object,n.sim=1000,s.meth="svd",prob.lev=0.05,...){
 
   testStat <- function (p, X, V, rank = NULL) {
       qrx <- qr(X)
@@ -59,30 +59,47 @@ summary.SemiParSampleSel <- function(object,n.sim=1000,s.meth="svd",sig.lev=0.05
   SE <- sqrt(diag(Vr))
   n  <- object$n 
 
+  epsilon <- .Machine$double.eps*10^6
+
   bs <- rmvnorm(n.sim, mean = coef(object), sigma=object$Vb, method=s.meth)
   d.sig <- dim(object$Vb)[1]-1
   d.rho <- dim(object$Vb)[1]
   est.SIGb <- est.THETAb <- est.KeTb <- rep(NA,n.sim)
 
+        est.SIGb <- exp(bs[,d.sig])
+
+        if(object$BivD=="N")               est.THETAb <- tanh(bs[,d.rho])	
+        if(object$BivD %in% c("C", "rC"))  est.THETAb <- exp(bs[,d.rho]) + epsilon
+        if(object$BivD %in% c("J", "rJ"))  est.THETAb <- 1 + exp(bs[,d.rho]) + epsilon
+	if(object$BivD=="FGM")             est.THETAb <- tanh(bs[,d.rho])
+	if(object$BivD=="F")               est.THETAb <- bs[,d.rho] + epsilon
+	if(object$BivD=="AMH")             est.THETAb <- tanh(bs[,d.rho])
+        if(object$BivD %in% c("G","rG"))   est.THETAb <- 1 + exp(bs[,d.rho]) 
+
+
   for(i in 1:n.sim){ 
-      est.SIGb[i] <- exp(bs[i,d.sig])
-        if(object$BivD=="N")   { est.THETAb[i] <- tanh(bs[i,d.rho]);	est.KeTb[i] <- tau(normalCopula(est.THETAb[i]))	}
-        if(object$BivD=="C")   { est.THETAb[i] <- exp(bs[i,d.rho]);	est.KeTb[i] <- tau(claytonCopula(est.THETAb[i]))}
-        if(object$BivD=="J")   { est.THETAb[i] <- 1+exp(bs[i,d.rho]);	est.KeTb[i] <- tau(joeCopula(est.THETAb[i]))	}  
-	if(object$BivD=="FGM") { est.THETAb[i] <- tanh(bs[i,d.rho]);	est.KeTb[i] <- tau(fgmCopula(est.THETAb[i]))	}
-	if(object$BivD=="F")   { est.THETAb[i] <- bs[i,d.rho];		est.KeTb[i] <- tau(frankCopula(est.THETAb[i]))	}
-	if(object$BivD=="AMH") { est.THETAb[i] <- tanh(bs[i,d.rho]);	est.KeTb[i] <- tau(amhCopula(est.THETAb[i]))	}
-        if(object$BivD=="G")   { est.THETAb[i] <- 1+exp(bs[i,d.rho]);	est.KeTb[i] <- tau(gumbelCopula(est.THETAb[i]))	}  
+        if(object$BivD=="N")        est.KeTb[i] <-  tau(normalCopula(est.THETAb[i]))	
+        else if(object$BivD=="C")   est.KeTb[i] <-  tau(claytonCopula(est.THETAb[i])) 
+        else if(object$BivD=="rC")  est.KeTb[i] <- -tau(claytonCopula(est.THETAb[i]))
+        else if(object$BivD=="J")   est.KeTb[i] <-  tau(joeCopula(est.THETAb[i]))	 
+        else if(object$BivD=="rJ")  est.KeTb[i] <- -tau(joeCopula(est.THETAb[i]))	   
+	else if(object$BivD=="FGM") est.KeTb[i] <-  tau(fgmCopula(est.THETAb[i]))	 
+	else if(object$BivD=="F")   est.KeTb[i] <-  tau(frankCopula(est.THETAb[i]))	 
+	else if(object$BivD=="AMH") est.KeTb[i] <-  tau(amhCopula(est.THETAb[i]))	 
+        else if(object$BivD=="G")   est.KeTb[i] <-  tau(gumbelCopula(est.THETAb[i]))	   
+        else if(object$BivD=="rG")  est.KeTb[i] <- -tau(gumbelCopula(est.THETAb[i]))  
   }
 
-  CIphi <- as.numeric(quantile(est.SIGb,c(sig.lev/2,1-sig.lev/2),na.rm=TRUE))
-  CIth  <- as.numeric(quantile(est.THETAb,c(sig.lev/2,1-sig.lev/2),na.rm=TRUE))
-  CIkt  <- as.numeric(quantile(est.KeTb,c(sig.lev/2,1-sig.lev/2),na.rm=TRUE))
+
+
+  CIphi <- as.numeric(quantile(est.SIGb,c(prob.lev/2,1-prob.lev/2),na.rm=TRUE))
+  CIth  <- as.numeric(quantile(est.THETAb,c(prob.lev/2,1-prob.lev/2),na.rm=TRUE))
+  CIkt  <- as.numeric(quantile(est.KeTb,c(prob.lev/2,1-prob.lev/2),na.rm=TRUE))
 
   tableN <- list(NULL,NULL)
   table  <- list()
   
-  ind <- list(ind1=1:1:object$gam1$nsdf, ind2=object$X1.d2+(1:object$gam2$nsdf) )
+  ind <- list(ind1=1:object$gam1$nsdf, ind2=object$X1.d2+(1:object$gam2$nsdf) )
 
   for(i in 1:2){
        estimate <- coef(object)[ind[[i]]]
@@ -97,6 +114,7 @@ summary.SemiParSampleSel <- function(object,n.sim=1000,s.meth="svd",sig.lev=0.05
   if((object$l.sp1!=0 || object$l.sp2!=0)){
   
     	pTerms.df <- pTerms.chi.sq <- pTerms.pv <- edf <- tableN <- list(0,0)
+        XX <- cbind(object$X1,object$X2)
           
              for(i in 1:2){
 
@@ -111,7 +129,7 @@ summary.SemiParSampleSel <- function(object,n.sim=1000,s.meth="svd",sig.lev=0.05
   			names(edf[[i]])[k] <- gam$smooth[[k]]$label 
   			b  <- coef(object)[ind]
   			V  <- Vr[ind,ind]
-  			if(i==1) Xt <- object$X1[, 1:length(ind)+gam$nsdf] else Xt <- object$X2[, 1:length(ind)+gam$nsdf]
+  			Xt <- XX[, ind]
   			pTerms.df[[i]][k] <- min(ncol(Xt), edf[[i]][k])
   			pTerms.chi.sq[[i]][k] <- Tp <- testStat(b, Xt, V, pTerms.df[[i]][k])
   			pTerms.df[[i]][k] <- attr(Tp, "rank")
@@ -130,7 +148,8 @@ summary.SemiParSampleSel <- function(object,n.sim=1000,s.meth="svd",sig.lev=0.05
                  n=n, phi=object$phi, sigma=object$sigma, shape=object$shape, theta=object$theta, tau=object$tau, 
                  formula1=object$gam1$formula, formula2=object$gam2$formula, 
                  l.sp1=object$l.sp1, l.sp2=object$l.sp2, 
-                 t.edf=object$t.edf, CIsig=CIphi, CIshape=CIphi, CIth=CIth, CIkt=CIkt, BivD=object$BivD, margins=object$margins, n.sel=object$n.sel)
+                 t.edf=object$t.edf, CIsig=CIphi, CIshape=CIphi, CIth=CIth, CIkt=CIkt, 
+                 BivD=object$BivD, margins=object$margins, n.sel=object$n.sel)
   
 
   class(res) <- "summary.SemiParSampleSel"

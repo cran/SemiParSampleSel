@@ -10,13 +10,13 @@ st.theta.star <- function(start.theta, co, BivD) {
   }
   
 
-  if(BivD=="C") {
+  if(BivD=="C" | BivD=="rC") {
         if(is.null(start.theta)) a.theta <- log(3) 
         else { if(start.theta>0) a.theta <- log(start.theta) else stop("Wrong initial value of theta.") } 
   } 
  
   
-  if(BivD=="J") {
+  if(BivD=="J" | BivD=="rJ") {
         if(is.null(start.theta)) a.theta <- log(3)
         else { if(start.theta>1) a.theta <- log(start.theta-1) else stop("Wrong initial value of theta.") }
   }  
@@ -46,7 +46,7 @@ st.theta.star <- function(start.theta, co, BivD) {
   }  
   
 
-  if(BivD=="G") {
+  if(BivD=="G" | BivD=="rG") {
         if(is.null(start.theta)) a.theta <- log(3)
         else { if(start.theta>1) a.theta <- log(start.theta-1) else stop("Wrong initial value of theta.") }
   }  

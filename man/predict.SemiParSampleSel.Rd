@@ -14,7 +14,7 @@ This function is based on \code{predict.gam()} in \code{mgcv}. Please see the do
 
 \usage{
 
-\method{predict}{SemiParSampleSel}(object, eq,...)
+\method{predict}{SemiParSampleSel}(object, eq, ...)
 
 
 }

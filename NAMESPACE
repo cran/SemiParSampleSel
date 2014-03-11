@@ -1,14 +1,27 @@
+export(bitsgHs,
+fit.SemiParSampleSel,
+ghss,ghss1,ghss2,
+logLik.SemiParSampleSel,
+plot.SemiParSampleSel,
+predict.SemiParSampleSel,
+print.SemiParSampleSel,
+print.summary.SemiParSampleSel,
+S.m,
+SemiParSampleSel,
+ss.checks,
+st.theta.star,
+summary.SemiParSampleSel,
+theta.tau,
+working.comp)
 
-exportPattern(".")
-
-import(mgcv, trust, mvtnorm)
-importFrom(magic, adiag)
-importFrom(copula, iRho, iTau, tau)
+importFrom(copula)
+importFrom(mgcv)
+importFrom(mvtnorm,rmvnorm)
+importFrom(trust,trust)
+importFrom(magic,adiag)
+importFrom(Matrix,nearPD,bdiag,chol,chol2inv,Matrix)
 
 S3method(plot, SemiParSampleSel)
 S3method(summary, SemiParSampleSel)
 S3method(print, SemiParSampleSel)
 S3method(print, summary.SemiParSampleSel)
-
-
-

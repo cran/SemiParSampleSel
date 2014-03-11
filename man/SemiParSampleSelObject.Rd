@@ -10,7 +10,7 @@
 
 
 \item{fit}{List of values and diagnostics extracted from the output of the algorithm. For instance, \code{fit$gradient} and \code{fit$S.h} return
-           the gradient vector and overall penalty matrix scaled by its smoothing parameters, for the bivariate probit model. See the 
+           the gradient vector and overall penalty matrix scaled by its smoothing parameters, for the bivariate model. See the 
            documentation of \code{trust} for details on the diagnostics provided.}
 
 \item{gam1}{Univariate fit for equation 1. See the documentation of \code{mgcv} for full details.}
@@ -22,7 +22,8 @@
 \item{coefficients}{The coefficients of the fitted semiparametric sample selection model. They are given in the following 
                     order: parametric and regression spline (if present)
                     coefficients for the first equation, parametric and regression spline
-                    coefficients for the second equation, logarithm of standard deviation of the output (in bivariate normal case) or logarithm of 
+                    coefficients for the second equation, logarithm of standard deviation of the outcome (in bivariate normal case) or 
+                    logarithm of 
                     scale parameter (in normal-gamma case) and transformed association coefficient.}
 
 \item{weights}{Prior weights used during model fitting.}
@@ -92,7 +93,7 @@
 
 \item{y2}{Dependent variable of the outcome equation.}
 
-\item{logL}{Value of the (unpenalized) log-likelihood evaluated at the (penalized or unpenalized) parameter 
+\item{logLik}{Value of the (unpenalized) log-likelihood evaluated at the (penalized or unpenalized) parameter 
             estimates.}
 
 \item{fp}{If \code{TRUE}, then a fully parametric model was fitted.} 

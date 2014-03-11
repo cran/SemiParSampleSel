@@ -31,15 +31,15 @@ This function is based on \code{plot.gam()} in \code{mgcv}. Please see the docum
 \details{
 
 This function produces plot showing the smooth terms of a fitted semiparametric bivariate probit model. For plots 
-of 1-D smooths, the x axis of each plot is labelled using the name of the regressor, while the y axis is labelled as \code{s(regr,edf)} 
+of 1-D smooths, the x axis of each plot is labelled using the name of the regressor, while the y axis is labelled as \code{s(regr, edf)} 
 where \code{regr} is the regressor name, and \code{edf} the estimated degrees of freedom of the smooth. As for 2-D smooths, perspective plots are produced with the x-axes labelled with the first and second variable names and the y axis 
-is labelled as \code{s(var1,var2,edf)}, which indicates the variables of which the term is a function and the \code{edf} for the term. 
+is labelled as \code{s(var1, var2, edf)}, which indicates the variables of which the term is a function and the \code{edf} for the term. 
 
-If \code{seWithMean=TRUE}, then the confidence intervals include the uncertainty about the overall mean. That is, 
+If \code{seWithMean = TRUE}, then the confidence intervals include the uncertainty about the overall mean. That is, 
 although each smooth is shown centred, the confidence intervals are obtained as if every other term in the model was 
 constrained to have average 0 (average taken over the covariate values) except for the smooth being plotted. The theoretical arguments 
-and simulation study of Marra and Wood (2012) suggests that \code{seWithMean=TRUE} results in intervals with
-close to nominal frequentist coverage probabilities. This option should not be used when fitting a random effect model.
+and simulation study of Marra and Wood (2012) suggests that \code{seWithMean = TRUE} results in intervals with
+close to nominal frequentist coverage probabilities. 
 
 }
 
@@ -75,7 +75,7 @@ The function can not deal with smooths of more than 2 variables.
 
 
 \seealso{
-\code{\link{InfCr}}, \code{\link{SemiParSampleSel}}, \code{\link{summary.SemiParSampleSel}}, \code{\link{predict.SemiParSampleSel}}
+\code{\link{SemiParSampleSel}}, \code{\link{summary.SemiParSampleSel}}, \code{\link{predict.SemiParSampleSel}}
 }
 
 

@@ -3,7 +3,7 @@
 
 \title{Internal Function}
 
-\description{Performs the optimization (using Newton-Raphson's method) and automatic smoothing parameter selection.
+\description{It performs the optimization using a trust region algorithm as well as automatic smoothing parameter selection.
 }
 
 

@@ -29,7 +29,7 @@ possible via the use of shrinakge smoothers or information criteria.
 
 \author{
 
-Giampiero Marra (University College London, Department of Statistical Science), Rosalba Radice (Birkbeck, University of London, Department of Economics, Mathematics and Statistics) and Malgorzata Wojtys (University College London, Department of Statistical Science)
+Giampiero Marra (University College London, Department of Statistical Science), Rosalba Radice (Birkbeck, University of London, Department of Economics, Mathematics and Statistics) and Malgorzata Wojtys (University of Plymouth, School of Computing and Mathematics)
 
 Maintainer: Giampiero Marra \email{giampiero.marra@ucl.ac.uk}
 
@@ -37,7 +37,7 @@ Maintainer: Giampiero Marra \email{giampiero.marra@ucl.ac.uk}
 
 \references{
 
-Marra G. and Radice R. (in press), Estimation of a Regression Spline Sample Selection Model. \emph{Computational Statistics and Data Analysis}.
+Marra G. and Radice R. (2013), Estimation of a Regression Spline Sample Selection Model. \emph{Computational Statistics and Data Analysis}, 61, 158-173.
 
 Wojtys M., Marra G. and Radice R. (submitted), Copula Regression Spline Sample Selection Models: The R Package SemiParSampleSel.
 

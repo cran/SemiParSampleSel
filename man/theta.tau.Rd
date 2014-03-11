@@ -3,7 +3,8 @@
 
 \title{Internal Function}
 
-\description{ Given an estimated value of theta.star this function computes theta using a proper transformation, and Kendall's tau for a given copula. }
+\description{Given an estimated value of \eqn{\theta^{*}}{\theta^{*}}, this function computes \eqn{\theta}{\theta} using a proper 
+transformation, and Kendall's \eqn{\tau}{\tau} for a given copula. }
 
 
 

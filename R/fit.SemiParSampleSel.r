@@ -2,22 +2,10 @@ fit.SemiParSampleSel <- function( dat, X1, X2, qu.mag, sp, X1.d2, X2.d2, gp1, gp
                                   BivD, margins, gamma, aut.sp, fp, start.v, rinit, rmax, fterm, mterm, control ) {
 
 
-  if(margins[2]=="N"){
-  	ghss  <- get(paste('ghss',BivD, sep=''))
-  	ghss1 <- get(paste('ghss',BivD,'1',sep=''))
-  	ghss2 <- get(paste('ghss',BivD,'2',sep=''))
-  }
-  
-  if(margins[2]=="G"){
-  	ghss  <- get(paste('ghss',BivD,'g', sep=''))
-  	ghss1 <- get(paste('ghss',BivD,'1g',sep=''))
-  	ghss2 <- get(paste('ghss',BivD,'2g',sep=''))
-  }
 
- 
-
-  fit  <- trust(ghss, start.v, rinit=rinit, rmax=rmax, dat=dat, dat1=X1, dat2=X2, qu.mag=qu.mag, sp=sp, X1.d2=X1.d2, X2.d2=X2.d2,
+  fit  <- trust(ghss, start.v, rinit=rinit, rmax=rmax, BivD=BivD, margins=margins, dat=dat, dat1=X1, dat2=X2, qu.mag=qu.mag, sp=sp, X1.d2=X1.d2, X2.d2=X2.d2,
                 l.sp1=l.sp1, l.sp2=l.sp2, gp1=gp1, gp2=gp2, fp=fp, blather=TRUE, fterm=fterm, mterm=mterm, iterlim=1e+4, weights=weights)
+
 
 
   iter.if <- fit$iterations
@@ -33,15 +21,18 @@ fit.SemiParSampleSel <- function( dat, X1, X2, qu.mag, sp, X1.d2, X2.d2, gp1, gp
 
       conv.sp <- TRUE; iter.sp <- 0  
 
+      myf <- function(x) list( rbind( c(x[1],x[2]), 
+                                      c(x[2],x[3])  ) )
+
       while( abs(l.n-l.o)/abs(l.o) > pr.tol){   
 
-                 fit  <- trust(ghss1, coef.p, rinit=rinit, rmax=rmax, dat=dat, exl1=coef.v[1], exl2=coef.v[2], dat1=X1, dat2=X2, qu.mag=qu.mag,
+                 fit  <- trust(ghss1, coef.p, rinit=rinit, rmax=rmax, BivD=BivD, margins=margins, dat=dat, exl1=coef.v[1], exl2=coef.v[2], dat1=X1, dat2=X2, qu.mag=qu.mag,
                       sp=sp, l.sp1=l.sp1, l.sp2=l.sp2, X1.d2=X1.d2, X2.d2=X2.d2, gp1=gp1, gp2=gp2, blather=TRUE, iterlim=1e+4, fterm=fterm, 
                       mterm=mterm, weights=weights)
 	  
                  spo <- sp; coef.p <- fit$argument
 
-		 wor.c    <- try(working.comp(fit,X1,X2,X1.d2,X2.d2,n))
+		 wor.c    <- try(working.comp(fit,X1,X2,X1.d2,X2.d2,n,myf))
                  if(class(wor.c)=="try-error") break
              
    
@@ -53,12 +44,12 @@ fit.SemiParSampleSel <- function( dat, X1, X2, qu.mag, sp, X1.d2, X2.d2, gp1, gp
                    
                  l.o <- fit$l
 
-                 fit  <- try(trust(ghss1, coef.p, rinit=rinit, rmax=rmax, dat=dat, exl1=coef.v[1], exl2=coef.v[2], dat1=X1, dat2=X2,
+                 fit  <- try(trust(ghss1, coef.p, rinit=rinit, rmax=rmax, BivD=BivD, margins=margins, dat=dat, exl1=coef.v[1], exl2=coef.v[2], dat1=X1, dat2=X2,
                            qu.mag=qu.mag, sp=sp, l.sp1=l.sp1, l.sp2=l.sp2, X1.d2=X1.d2, X2.d2=X2.d2, gp1=gp1, gp2=gp2, blather=TRUE, iterlim=1e+4, 
                            fterm=fterm, mterm=mterm, weights=weights), silent=TRUE)
 
              	 if(class(fit)=="try-error"){ 
-               	           fit  <- trust(ghss1, coef.p, rinit=rinit, rmax=rmax, dat=dat, exl1=coef.v[1], exl2=coef.v[2], dat1=X1, dat2=X2, qu.mag=qu.mag,
+               	           fit  <- trust(ghss1, coef.p, rinit=rinit, rmax=rmax, BivD=BivD, margins=margins, dat=dat, exl1=coef.v[1], exl2=coef.v[2], dat1=X1, dat2=X2, qu.mag=qu.mag,
                 	                 sp=spo, l.sp1=l.sp1, l.sp2=l.sp2, X1.d2=X1.d2, X2.d2=X2.d2, gp1=gp1, gp2=gp2, blather=TRUE, iterlim=1e+4, 
                         	         fterm=fterm, mterm=mterm, weights=weights)
                	           conv.sp <- FALSE
@@ -68,18 +59,18 @@ fit.SemiParSampleSel <- function( dat, X1, X2, qu.mag, sp, X1.d2, X2.d2, gp1, gp
                  coef.p <- fit$argument
                  l.n <- fit$l
 
-                 fit  <- trust(ghss2, coef.v, rinit=rinit, rmax=rmax, dat=dat, params.f=coef.p, dat1=X1, dat2=X2, qu.mag=qu.mag, sp=sp, 
+                 fit  <- trust(ghss2, coef.v, rinit=rinit, rmax=rmax, BivD=BivD, margins=margins, dat=dat, params.f=coef.p, dat1=X1, dat2=X2, qu.mag=qu.mag, sp=sp, 
                                X1.d2=X1.d2, X2.d2=X2.d2, blather=TRUE, iterlim=1e+4, fterm=fterm, mterm=mterm, weights=weights)
 
                  coef.v <- fit$argument
 
-                 if(iter.sp>iterlimSP){ conv.sp <- FALSE; break; }     
+                 if(iter.sp>iterlimSP){ conv.sp <- FALSE; break}     
            
         }
 
         up.start.v <- c(coef.p,coef.v) 
   
-        fit  <- trust(ghss, up.start.v, rinit=rinit, rmax=rmax, dat=dat, dat1=X1, dat2=X2, qu.mag=qu.mag, sp=sp, X1.d2=X1.d2, X2.d2=X2.d2, 
+        fit  <- trust(ghss, up.start.v, rinit=rinit, rmax=rmax, BivD=BivD, margins=margins, dat=dat, dat1=X1, dat2=X2, qu.mag=qu.mag, sp=sp, X1.d2=X1.d2, X2.d2=X2.d2, 
                       l.sp1=l.sp1, l.sp2=l.sp2, gp1=gp1, gp2=gp2, fp=fp, blather=TRUE, fterm=fterm, mterm=mterm, iterlim=1e+4, weights=weights)
         iter.fi <- fit$iterations
 

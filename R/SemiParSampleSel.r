@@ -7,9 +7,9 @@ SemiParSampleSel <- function(formula.eq1, formula.eq2, data=list(), weights=NULL
 
 
   if(margins[1]!="N") stop("Error in margin names.")
+  if (margins[2] == "G") stop("Gamma case not finalised yet. Check next release.")
   if(!(margins[2] %in% c("N","G")) ) stop("Error in margin names.")
-  if(margins[2]=="G") stop("Gamma case not finalised yet. Check the next release.")
-  if(!(BivD %in% c("N", "C", "J", "FGM", "F", "AMH", "G"))) stop("Error in parameter BivD value. It should be one of: N, C, J, FGM, F, AMH, G.")
+  if(!(BivD %in% c("N", "C", "J", "FGM", "F", "AMH", "G", "rC", "rJ", "rG"))) stop("Error in parameter BivD value. It should be one of: N, C, J, FGM, F, AMH, G, rC, rJ, rG.")
 
   qu.mag <- sp <- NULL
   
@@ -21,7 +21,8 @@ SemiParSampleSel <- function(formula.eq1, formula.eq2, data=list(), weights=NULL
   y1 <- gam1$y; inde <- y1 > 0
   if(margins[2]=="N")      gam2 <- eval(substitute(gam(formula.eq2, gamma=gamma, data=data, weights=weights, subset=inde),list(weights=weights,inde=inde)))
   else if(margins[2]=="G") gam2 <- eval(substitute(gam(formula.eq2, gamma=gamma, data=data, weights=weights, subset=inde, family=Gamma(link = "log")),list(weights=weights,inde=inde))) else stop("Error in margin names.")
-
+  if(table(inde)[[2]]!=length(gam2$y)) stop("The length of the outcome variable does not match that of the selected observations.")
+  
   ########################################
   # Data Objects
   ########################################
@@ -82,20 +83,16 @@ SemiParSampleSel <- function(formula.eq1, formula.eq2, data=list(), weights=NULL
                           l.sp1=l.sp1, l.sp2=l.sp2, weights=weights, iterlimSP=iterlimsp, pr.tol=pr.tolsp, BivD=BivD, margins=margins,
                           aut.sp=aut.sp, gamma=gamma, fp=fp, start.v=start.v, rinit=rinit, rmax=rmax, fterm=fterm, mterm=mterm, control=control )
 
+
+
+  ########################################
+  # Post-estimation quantities
+  ########################################
+
   He <- fit$fit$hessian
   He.eig <- eigen(He,symmetric=TRUE)
-  k.e <- sum(as.numeric(He.eig$val<sqrt(.Machine$double.eps)))
-   
-  if(k.e!=0){
-      ind.e <- (length(He.eig$val)-(k.e-1)):length(He.eig$val)
-      min.e <- min(He.eig$val[1:(ind.e[1]-1)])
-      for(i in 1:k.e) He.eig$val[ind.e[i]] <- min.e/10^i  
-      Vb <- He.eig$vec%*%diag(1/He.eig$val)%*%t(He.eig$vec)      
-  }
-  else {
-      Vb <- He.eig$vec%*%diag(1/He.eig$val)%*%t(He.eig$vec) 
-  }
-         
+  Vb <- He.eig$vec%*%diag(1/He.eig$val)%*%t(He.eig$vec) 
+       
   if((l.sp1!=0 || l.sp2!=0) && fp==FALSE){ HeSh <- He - fit$fit$S.h; F <- Vb%*%HeSh } else { HeSh <- He; F <- diag(rep(1,dim(Vb)[1])) }      
   t.edf <- sum(diag(F))
 
@@ -119,11 +116,12 @@ SemiParSampleSel <- function(formula.eq1, formula.eq2, data=list(), weights=NULL
   ###########################################################################
 
        L <- list(fit=fit$fit, gam1=gam1, gam2=gam2, gam2.1=gam2.1, coefficients=fit$fit$argument, weights=weights, sp=fit$sp, 
-            iter.if=fit$iter.if, iter.sp=fit$iter.sp, iter.fi=fit$iter.fi, start.v=start.v, phi=phi, sigma=sigma, shape=k, theta=theta, tau=KendTau, 
+            iter.if=fit$iter.if, iter.sp=fit$iter.sp, iter.fi=fit$iter.fi, start.v=start.v, phi=phi, sigma=sigma, shape=k, 
+            theta=theta, tau=KendTau, 
             n=n, n.sel=length(gam2$y), X1=X1, X2=X2, X1.d2=X1.d2, X2.d2=X2.d2, 
             l.sp1=l.sp1, l.sp2=l.sp2, He=He, HeSh=HeSh, Vb=Vb, F=F, BivD=BivD, margins=margins,
             t.edf=t.edf, bs.mgfit=fit$bs.mgfit, conv.sp=fit$conv.sp, wor.c=fit$wor.c, eta1=fit$fit$eta1, eta2=fit$fit$eta2, 
-            y1=y1, y2=y2, logL=fit$fit$l, fp=fp )
+            y1=y1, y2=y2, logLik=-fit$fit$l, fp=fp )
 
   class(L) <- "SemiParSampleSel"
 
