@@ -14,12 +14,11 @@ summary.SemiParSampleSel,
 theta.tau,
 working.comp)
 
-importFrom(copula)
-importFrom(mgcv)
+import(copula,mgcv)
 importFrom(mvtnorm,rmvnorm)
 importFrom(trust,trust)
 importFrom(magic,adiag)
-importFrom(Matrix,nearPD,bdiag,chol,chol2inv,Matrix)
+importFrom(Matrix,nearPD,bdiag,Matrix)
 
 S3method(plot, SemiParSampleSel)
 S3method(summary, SemiParSampleSel)

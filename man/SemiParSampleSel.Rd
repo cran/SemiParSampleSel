@@ -87,7 +87,7 @@ fully parametric bivariate sample selection model. In principle, classic
 maximum likelihood estimation can be employed. However, to avoid overfitting, penalized likelihood maximization is used instead. Here the use of 
 penalty matrices allows for the suppression of that part of smooth term complexity which has no support from the data. The tradeoff between smoothness 
 and fitness is controlled by smoothing parameters associated with the penalty matrices. Smoothing parameters are chosen to 
-minimize the approximate Un-Biased Risk Estimator (UBRE) score.
+minimize the approximate Un-Biased Risk Estimator (UBRE) score which can also be viewed as an approximate AIC.
 
 The optimization problem is solved by a trust region algorithm. Automatic smoothing parameter selection is integrated 
 using a performance-oriented iteration approach (Gu, 1992; Wood, 2004) combined with a `leapfrog' algorithm (Smith, 1996). Roughly 
@@ -128,7 +128,7 @@ Wood S.N. (2004), Stable and efficient multiple smoothing parameter estimation f
 \section{WARNINGS}{
 
 In the current context, convergence failure may occur when \eqn{\theta}{\theta} is very high, the total number and selected number of 
-observations is low, and the data have low information content. 
+observations are low, and the data have low information content. 
 
 
 } 

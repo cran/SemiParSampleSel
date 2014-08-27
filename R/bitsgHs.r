@@ -128,7 +128,6 @@ if(margin=='N'){
 
     u <- 1-teta*F1*(1-2*F2)
     z <- 1-(1-F1)*(1-teta*F1*(1-2*F2))
-    z <- ifelse(z<0.99999999,z,0.99999999)
     h <- -2*teta*F1*f2*u^(-1) 
     E <- u^(-1)*(e2*u*sqv^(-1) - h*u)
     if(ver!=2){
@@ -137,10 +136,10 @@ if(margin=='N'){
        A <- i1*2*teta*u^(-2)*f2*ph
     }
     if(ver!=1){ 
-       b <- (1-u^(-1))*(1-teta^2)*teta^(-1)
+       b <- (teta^2-1)*F1*(1-2*F2)*u^(-1)
        B <- -i1*2*F1*f2*u^(-2)*(1-teta^2)
        if(ver!=2)  h14 <- i1*(1-2*F2)*u^(-2)*ph*(1-teta^2)
-       h44 <- i1*(u-1)*u^(-1)*((1-teta^2)*teta^(-2)*u^(-1)-(1+teta^2)*teta^(-2))*(1-teta^2)
+       h44 <- -i1*b*(2*teta+b)
     }
 
   }

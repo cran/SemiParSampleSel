@@ -16,7 +16,7 @@ with an adaptation of a low level smoothness selection fitting procedure from th
  
 \code{\link{SemiParSampleSel}} supports the use of many smoothers as extracted from \code{mgcv}. Scale invariant tensor product smooths
 are not currently supported. Estimation is by penalized maximum likelihood with automatic smoothness selection by approximate Un-Biased 
-Risk Estimator (UBRE) score. 
+Risk Estimator (UBRE) score which can also be viewed as an approximate AIC. 
 The depedence between the selection and outcome equations is modelled through the use of copulas.
 
 Confidence intervals for smooth components are derived using a Bayesian approach. P-values for testing 

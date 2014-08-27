@@ -1,10 +1,10 @@
-3ec966289ba6b3c62dd1035506b3c544 *ChangeLog
-ce99aedb7dd01bcb04ff5011d93617b4 *DESCRIPTION
-07279dc701bedee9cd9acf4c470110f3 *NAMESPACE
+43cac40d430cbf707839a01de269a088 *ChangeLog
+08c0d43bc2cb6ffc2a30135e16283a7d *DESCRIPTION
+3ee2387ce7797ec3ca2c7c5d67f0d536 *NAMESPACE
 8181695ba4ab40379875bff761289bc4 *R/S.m.r
 eaf770e16cb841d498ee28dee06bff6b *R/SemiParSampleSel.r
 ffaeeeddeb59e84079d75cf35b4e555d *R/VuongClarke.bcm.r
-66da417087d0bb1ec27cd4fc93bd8ae5 *R/bitsgHs.r
+46ec3fd03c3f539ce28b4965c442ae8c *R/bitsgHs.r
 435d701e2eae83b59132f8dd04c68203 *R/fit.SemiParSampleSel.r
 71ac3f7ff4d044c913f8aa8e659a308c *R/ghss.r
 bae4d8f8e1a2853d0bf631aa23d82204 *R/ghss1.r
@@ -22,8 +22,8 @@ d99a6a681df31b1067a0b53f5d7cf45a *R/theta.tau.r
 53977e20556fd49f05b2bba67d527f8f *R/zzz.r
 5541ae2a51f1589bb24bb508f1055ff4 *inst/CITATION
 f805f0029556a2eefcf4251f95ab48a7 *man/S.m.Rd
-39b05f610bea560055562f87ea0a0d45 *man/SemiParSampleSel-package.Rd
-50b7d9559cd59775a8eaed8c1b73cb5a *man/SemiParSampleSel.Rd
+92a3f69cc831fa5ccc7bdee96bc00af7 *man/SemiParSampleSel-package.Rd
+67e41cd861fba48568aa65d79a157121 *man/SemiParSampleSel.Rd
 a07e94b80ba5300472df8fe1d826e543 *man/SemiParSampleSelObject.Rd
 011eac7e287102baeabf38495e5e616d *man/VuongClarke.bcm.Rd
 fdd52c0e2674bdf3b07c76c7e84ff297 *man/bitsgHs.Rd
