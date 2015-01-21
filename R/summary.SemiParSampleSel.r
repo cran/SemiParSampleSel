@@ -59,47 +59,62 @@ summary.SemiParSampleSel <- function(object,n.sim=1000,s.meth="svd",prob.lev=0.0
   SE <- sqrt(diag(Vr))
   n  <- object$n 
 
-  epsilon <- .Machine$double.eps*10^6
+  epsilon <- sqrt(.Machine$double.eps)
 
   bs <- rmvnorm(n.sim, mean = coef(object), sigma=object$Vb, method=s.meth)
-  d.sig <- dim(object$Vb)[1]-1
-  d.rho <- dim(object$Vb)[1]
-  est.SIGb <- est.THETAb <- est.KeTb <- rep(NA,n.sim)
 
-        est.SIGb <- exp(bs[,d.sig])
+  d.rho <- dim(Vr)[1]
 
-        if(object$BivD=="N")               est.THETAb <- tanh(bs[,d.rho])	
-        if(object$BivD %in% c("C", "rC"))  est.THETAb <- exp(bs[,d.rho]) + epsilon
-        if(object$BivD %in% c("J", "rJ"))  est.THETAb <- 1 + exp(bs[,d.rho]) + epsilon
-	if(object$BivD=="FGM")             est.THETAb <- tanh(bs[,d.rho])
-	if(object$BivD=="F")               est.THETAb <- bs[,d.rho] + epsilon
-	if(object$BivD=="AMH")             est.THETAb <- tanh(bs[,d.rho])
-        if(object$BivD %in% c("G","rG"))   est.THETAb <- 1 + exp(bs[,d.rho]) 
+  d.sig <- d.nu <- CIphi <- CInu <- NULL
 
 
-  for(i in 1:n.sim){ 
-        if(object$BivD=="N")        est.KeTb[i] <-  tau(normalCopula(est.THETAb[i]))	
-        else if(object$BivD=="C")   est.KeTb[i] <-  tau(claytonCopula(est.THETAb[i])) 
-        else if(object$BivD=="rC")  est.KeTb[i] <- -tau(claytonCopula(est.THETAb[i]))
-        else if(object$BivD=="J")   est.KeTb[i] <-  tau(joeCopula(est.THETAb[i]))	 
-        else if(object$BivD=="rJ")  est.KeTb[i] <- -tau(joeCopula(est.THETAb[i]))	   
-	else if(object$BivD=="FGM") est.KeTb[i] <-  tau(fgmCopula(est.THETAb[i]))	 
-	else if(object$BivD=="F")   est.KeTb[i] <-  tau(frankCopula(est.THETAb[i]))	 
-	else if(object$BivD=="AMH") est.KeTb[i] <-  tau(amhCopula(est.THETAb[i]))	 
-        else if(object$BivD=="G")   est.KeTb[i] <-  tau(gumbelCopula(est.THETAb[i]))	   
-        else if(object$BivD=="rG")  est.KeTb[i] <- -tau(gumbelCopula(est.THETAb[i]))  
-  }
+  if(object$margins[2] %in% c("G", "N", "NB", "PIG")) d.sig <- d.rho - 1 
+  if(object$margins[2] %in% c("D", "S")) {d.sig <- d.rho - 2; d.nu  <- d.rho - 1}
+
+  est.NUb <- est.SIGb <- est.THETAb <- est.KeTb <- NULL # rep(NA,n.sim)
 
 
 
-  CIphi <- as.numeric(quantile(est.SIGb,c(prob.lev/2,1-prob.lev/2),na.rm=TRUE))
+  if(object$margins[2] %in% c("G", "N", "NB", "PIG","D", "S")) est.SIGb <- exp(bs[,d.sig])
+  if(object$margins[2] == "D") est.NUb <- plogis(bs[,d.nu])
+  if(object$margins[2] == "S") est.NUb <- bs[,d.nu]
+
+
+
+        if(object$BivD=="N")                                  est.THETAb <- tanh(bs[,d.rho])	
+        if(object$BivD %in% c("C0", "C90", "C180", "C270"))   est.THETAb <- exp(bs[,d.rho]) + epsilon
+        if(object$BivD %in% c("J0", "J90", "J180", "J270"))   est.THETAb <- 1 + exp(bs[,d.rho]) + epsilon
+	if(object$BivD=="FGM")                                est.THETAb <- tanh(bs[,d.rho])
+	if(object$BivD=="F")                                  est.THETAb <- bs[,d.rho] + epsilon
+	if(object$BivD=="AMH")                                est.THETAb <- tanh(bs[,d.rho])
+        if(object$BivD %in% c("G0","G90", "G180","G270"))     est.THETAb <- 1 + exp(bs[,d.rho]) 
+
+
+# for(i in 1:n.sim){ 
+#        if(object$BivD=="N")                   est.KeTb[i] <-  tau(normalCopula(est.THETAb[i]))	
+#        if(object$BivD %in% c("C0", "C180"))   est.KeTb[i] <-  tau(claytonCopula(est.THETAb[i])) 
+#        if(object$BivD %in% c("C90", "C270"))  est.KeTb[i] <- -tau(claytonCopula(est.THETAb[i]))
+#        if(object$BivD %in% c("J0", "J180"))   est.KeTb[i] <-  tau(joeCopula(est.THETAb[i]))	 
+#        if(object$BivD %in% c("J90", "J270"))  est.KeTb[i] <- -tau(joeCopula(est.THETAb[i]))	   
+#	if(object$BivD=="FGM")                 est.KeTb[i] <-  tau(fgmCopula(est.THETAb[i]))	 
+#	if(object$BivD=="F")                   est.KeTb[i] <-  tau(frankCopula(est.THETAb[i]))	 
+#	if(object$BivD=="AMH")                 est.KeTb[i] <-  tau(amhCopula(est.THETAb[i]))	 
+#        if(object$BivD %in% c("G0", "G180"))   est.KeTb[i] <-  tau(gumbelCopula(est.THETAb[i]))	   
+#        if(object$BivD %in% c("G90", "G270"))  est.KeTb[i] <- -tau(gumbelCopula(est.THETAb[i]))  
+#  }
+
+
+  if(object$margins[2] %in% c("G", "N", "NB", "PIG","D", "S")) CIphi <- as.numeric(quantile(est.SIGb,c(prob.lev/2,1-prob.lev/2),na.rm=TRUE))
+  if(object$margins[2] %in% c("D", "S")) CInu <- as.numeric(quantile(est.NUb,c(prob.lev/2,1-prob.lev/2),na.rm=TRUE)) 
+
+
   CIth  <- as.numeric(quantile(est.THETAb,c(prob.lev/2,1-prob.lev/2),na.rm=TRUE))
-  CIkt  <- as.numeric(quantile(est.KeTb,c(prob.lev/2,1-prob.lev/2),na.rm=TRUE))
+  #CIkt  <- as.numeric(quantile(est.KeTb,c(prob.lev/2,1-prob.lev/2),na.rm=TRUE))
 
-  tableN <- list(NULL,NULL)
+  tableN <- list(NULL, NULL)
   table  <- list()
   
-  ind <- list(ind1=1:object$gam1$nsdf, ind2=object$X1.d2+(1:object$gam2$nsdf) )
+  ind <- list(ind1=1:object$gp1, ind2=object$X1.d2+(1:object$gp2) )
 
   for(i in 1:2){
        estimate <- coef(object)[ind[[i]]]
@@ -145,10 +160,10 @@ summary.SemiParSampleSel <- function(object,n.sim=1000,s.meth="svd",prob.lev=0.0
 
      res <- list(tableP1=table[[1]], tableP2=table[[2]], 
                  tableNP1=tableN[[1]], tableNP2=tableN[[2]], 
-                 n=n, phi=object$phi, sigma=object$sigma, shape=object$shape, theta=object$theta, tau=object$tau, 
+                 n=n, phi=object$phi, sigma=object$sigma, shape=object$shape, theta=object$theta,  tau= NULL, # object$tau, 
                  formula1=object$gam1$formula, formula2=object$gam2$formula, 
                  l.sp1=object$l.sp1, l.sp2=object$l.sp2, 
-                 t.edf=object$t.edf, CIsig=CIphi, CIshape=CIphi, CIth=CIth, CIkt=CIkt, 
+                 t.edf=object$t.edf, CIsig=CIphi, CIshape=CIphi, CIth=CIth, CInu=CInu, CIkt= NULL, #CIkt, 
                  BivD=object$BivD, margins=object$margins, n.sel=object$n.sel)
   
 

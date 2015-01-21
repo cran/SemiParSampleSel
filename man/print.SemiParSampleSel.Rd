@@ -26,8 +26,8 @@
 
 \details{ 
 
-\code{print.SemiParSampleSel} prints out the family, model equations, total number of observations, estimated dispersion and association  
-coefficients and total effective degrees of freedom for the penalized or unpenalized model. 
+\code{print.SemiParSampleSel} prints out the family, model equations, total number of observations, estimated association, spread 
+and shape (if present) coefficients, and total effective degrees of freedom for the penalized or unpenalized model. 
 
 }
 

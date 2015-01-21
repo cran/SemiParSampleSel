@@ -3,7 +3,7 @@
 
 \title{Internal Function}
 
-\description{It provides penalty matrices in a format suitable for the automatic smoothness selection procedure.}
+\description{It provides penalty matrices in a format suitable for the automatic smoothness estimation procedure.}
 
 
 \author{

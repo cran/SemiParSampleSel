@@ -1,10 +1,10 @@
-\name{ghss}
-\alias{ghss}
+\name{ghssD}
+\alias{ghssD}
 
 \title{Internal Function}
 
 \description{It provides the log-likelihood, gradient and Hessian matrix for penalized or unpenalized maximum 
-likelihood optimization, for several bivariate copula distributions and continuous outcome margins.
+likelihood optimization, for several bivariate copula distributions and discrete outcome margins.
 
 }
 

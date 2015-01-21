@@ -3,7 +3,7 @@
 
 \title{Internal Function}
 
-\description{It performs the optimization using a trust region algorithm as well as automatic smoothing parameter selection.
+\description{It performs the optimization using a trust region algorithm as well as automatic smoothing parameter estimation.
 }
 
 

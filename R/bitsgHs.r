@@ -1,10 +1,12 @@
 bitsgHs <- function(cop,margin,i1,F1,F2,f2,eta1,ph,teta,e2=0,sqv=0,ver=0){
 
 
+# tofyDEL2
+
 if(margin=='N'){
 
 
-   if(cop=="C"){
+   if(cop=="C0"){
 
     lnF1 <- log(F1)
     lnF2 <- log(F2)
@@ -32,7 +34,8 @@ if(margin=='N'){
       h44 <- i1*(zt*( teta*lnF2 + lnu/teta + (1-teta)*C/u + teta*teta1*(Ct/u-C^2/u^2) ) - b^2/z)
     }
   }	
-  else if(cop=="rC"){
+  
+  if(cop=="C90"){
   
     F1b <- 1-F1
     lnF1b <- log(F1b)
@@ -61,7 +64,8 @@ if(margin=='N'){
      z <- 1-z
 
   }	
-  else if(cop=="J"){
+  
+  if(cop=="J0"){
 	
     F1b <- 1-F1
     F2b <- 1-F2
@@ -94,7 +98,8 @@ if(margin=='N'){
     }
 
   }	
-  else if(cop=="rJ"){
+  
+  if(cop=="J90"){
 
     F2b <- 1-F2
     lnF1 <- log(F1)
@@ -124,7 +129,8 @@ if(margin=='N'){
     z <- 1-z
 
   }
-  else if(cop=="FGM"){
+  
+  if(cop=="FGM"){
 
     u <- 1-teta*F1*(1-2*F2)
     z <- 1-(1-F1)*(1-teta*F1*(1-2*F2))
@@ -143,7 +149,8 @@ if(margin=='N'){
     }
 
   }
-  else if(cop=="F"){
+  
+  if(cop=="F"){
   
     u <- exp(teta*(F1+F2))-exp(teta*(1+F2))
     z <- 1-u/(u-exp(teta*(1+F1))+exp(teta))
@@ -169,7 +176,8 @@ if(margin=='N'){
 	)
     }
   }
-  else if(cop=="AMH"){
+  
+  if(cop=="AMH"){
 
     u <- 1-teta*(1-F1)*(1-F2)
     z <- F1*(1-teta+teta*F1)*u^(-2);
@@ -191,7 +199,8 @@ if(margin=='N'){
        h44 <- i1*( -b*(b+2*teta) + 2*(1-teta^2)*teta^(-1)*(1-u)*u^(-1)*(2*b-(1-teta^2)*teta^(-1)*(1-u)*u^(-1)*z*zt) )
     }
   }
-  else if(cop=="G"){
+  
+  if(cop=="G0"){
   
     lnF1 <- -log(F1)
     lnF2 <- -log(F2)
@@ -225,7 +234,8 @@ if(margin=='N'){
 		  ut*teta^(-2)*(C/u-log(u)/teta)^2 - Ct/u + C^2/u^2 ) +  b - b^2/z )
     }
   }
-  else if(cop=="rG"){
+  
+  if(cop=="G90"){
   
     F1b <- 1-F1
     lnF1b <- -log(F1b)
@@ -260,8 +270,11 @@ if(margin=='N'){
     z <- 1-z
 
   }
-}    #################################################################################################################
-else if(margin=='G'){
+}    
+
+#################################################################################################################
+
+if(margin=='G'){
 
 
   if(cop=="N"){
@@ -287,7 +300,8 @@ else if(margin=='G'){
     z <- 1-pnorm(d)
 
   }	
-  else if(cop=="C"){
+  
+  if(cop=="C0"){
   
     lnF1 <- log(F1)
     lnF2 <- log(F2)
@@ -314,7 +328,8 @@ else if(margin=='G'){
     }
 
   }	
-  else if(cop=="rC"){
+  
+  if(cop=="C90"){
   
     F1b <- 1-F1
     lnF1b <- log(F1b)
@@ -342,7 +357,8 @@ else if(margin=='G'){
     z <- 1-z
 
   }	
-  else if(cop=="J"){
+  
+  if(cop=="J0"){
   
     F1b <- 1-F1
     F2b <- 1-F2
@@ -387,7 +403,8 @@ else if(margin=='G'){
 
 
   }	
-  else if(cop=="rJ"){
+  
+  if(cop=="J90"){
   
     F1b <- 1-F1
     F2b <- 1-F2
@@ -420,7 +437,8 @@ else if(margin=='G'){
     z <- 1-z
 
   }
-  else if(cop=="FGM"){
+  
+  if(cop=="FGM"){
   
     u <- 1-teta*F1*(1-2*F2)
     z <- 1-(1-F1)*u
@@ -439,7 +457,8 @@ else if(margin=='G'){
     }
 
  }
-  else if(cop=="F"){
+  
+  if(cop=="F"){
   
     u <- exp(teta*(F1+F2)) - exp(teta*(1+F2))
     z <- u/(u-exp(teta*(1+F1))+exp(teta))
@@ -467,7 +486,8 @@ else if(margin=='G'){
     z <- 1-z
 
   }
-  else if(cop=="AMH"){
+  
+  if(cop=="AMH"){
   
     u <- 1-teta*(1-F1)*(1-F2)
     u <- ifelse(u>0.0000001,u,0.0000001)
@@ -493,7 +513,8 @@ else if(margin=='G'){
 	   )
     }
   }
-  else if(cop=="G"){
+  
+  if(cop=="G0"){
 
     lnF1 <- -log(F1)
     lnF2 <- -log(F2)
@@ -534,7 +555,8 @@ else if(margin=='G'){
     h <- d*h
 
   }
-  else if(cop=="rG"){
+  
+  if(cop=="G90"){
   
     F1b <- 1-F1
     lnF1b <- -log(F1b)
@@ -570,6 +592,9 @@ else if(margin=='G'){
 
 
 }
+
+
+
 
 
  if(ver==1) b <- B <- h14 <- h44 <- 0

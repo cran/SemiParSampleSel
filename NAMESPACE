@@ -1,6 +1,6 @@
-export(bitsgHs,
-fit.SemiParSampleSel,
-ghss,ghss1,ghss2,
+export(bitsgHs, est.aver, print.est.aver,
+fit.SemiParSampleSel,fit.SemiParSampleSel1,
+ghss,
 logLik.SemiParSampleSel,
 plot.SemiParSampleSel,
 predict.SemiParSampleSel,
@@ -14,11 +14,12 @@ summary.SemiParSampleSel,
 theta.tau,
 working.comp)
 
-import(copula,mgcv)
+import(copula,mgcv,gamlss.dist)
 importFrom(mvtnorm,rmvnorm)
 importFrom(trust,trust)
 importFrom(magic,adiag)
-importFrom(Matrix,nearPD,bdiag,Matrix)
+importFrom(Matrix,bdiag,Matrix)
+importFrom(VGAM,pbinorm,dbinorm)
 
 S3method(plot, SemiParSampleSel)
 S3method(summary, SemiParSampleSel)

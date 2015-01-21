@@ -63,7 +63,6 @@ See Wojtys et al. (submitted) for further details.
 \item{shape}{Estimated shape parameter for the response of the outcome equation in the case of gamma marginal distribution of the outcome.}
 \item{phi}{Estimated dispersion for the response of the outcome equation.} 
 \item{theta}{Estimated coefficient linking the two equations.} 
-\item{tau}{Estimated Kendall's tau association coefficient between the two equations.}
 \item{formula1}{Formula used for equation1.}
 \item{formula2}{Formula used for equation2.}
 \item{l.sp1}{Number of smooth components in equation 1.}
@@ -71,8 +70,8 @@ See Wojtys et al. (submitted) for further details.
 \item{t.edf}{Total degrees of freedom of the estimated sample selection model.}
 \item{CIsig}{`Confidence' interval for \eqn{\sigma}{\sigma} in the case of normal marginal distribution of the outcome.}
 \item{CIshape}{`Confidence' interval for the shape parameter in the case of gamma distribution of the outcome.}
+\item{CInu}{`Confidence' interval for the shape parameter in the case of a discrete distribution of the outcome.}
 \item{CIth}{`Confidence' intervals for \eqn{\theta}{\theta}.}
-\item{CIkt}{`Confidence' intervals for \eqn{\tau}{\tau}.}
 \item{BivD}{Selected copula function.}
 \item{margins}{Margins used in the bivariate copula specification.}
 \item{n.sel}{Number of selected observations.}

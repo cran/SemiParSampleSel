@@ -39,7 +39,7 @@ Maintainer: Giampiero Marra \email{giampiero.marra@ucl.ac.uk}
 
 
 \seealso{
-\code{\link{SemiParSampleSel}}, \code{\link{plot.SemiParSampleSel}}, \code{\link{summary.SemiParSampleSel}}
+\code{\link{SemiParSampleSel}}, \code{\link{est.aver}}, \code{\link{plot.SemiParSampleSel}}, \code{\link{summary.SemiParSampleSel}}
 }
 
 

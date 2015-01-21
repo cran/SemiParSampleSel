@@ -3,7 +3,8 @@
 
 \title{Some convergence diagnostics}
 
-\description{It takes a fitted \code{SemiParSampleSel} object produced by \code{SemiParSampleSel()} and produces some diagnostic information about the fitting procedure.
+\description{It takes a fitted \code{SemiParSampleSel} object produced by \code{SemiParSampleSel()} and produces some diagnostic 
+information about the fitting procedure.
 
 }
 
