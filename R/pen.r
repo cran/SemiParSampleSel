@@ -1,54 +1,109 @@
-pen <- function(params, qu.mag, sp, VC){
+pen <- function(params, qu.mag, sp, VC, eq1 = "yes"){
 
-    dimP1 <- dimP2 <- 0  
-    
-    if(VC$margins[2] %in% c("N", "NB", "PIG", "G")) dzer <- diag(0,2) 
-    if(VC$margins[2] %in% c("P"))                   dzer <- diag(0,1) 
-    if(VC$margins[2] %in% c("D", "S"))              dzer <- diag(0,3)  
 
-      
-    S1 <- S2 <- matrix(0,1,1)   
+if( eq1 == "no" ) l.sp1 <- 0 else l.sp1 <- VC$l.sp1  
 
-    S <- mapply("*", qu.mag$Ss, sp, SIMPLIFY=FALSE)
-    S <- do.call(adiag, lapply(S, unlist))
+    ma1 <- matrix(0,VC$gp1,VC$gp1)   
+    if(l.sp1 == 0) EQ1P <- adiag(ma1)
+    
+    if(l.sp1 != 0){
+    ind <- 1:l.sp1
+    S1 <- mapply("*", qu.mag$Ss[ind], sp[ind], SIMPLIFY=FALSE)
+    S1 <- do.call(adiag, lapply(S1, unlist))
+    EQ1P <- adiag(ma1, S1)
+                   } 
+                     
+    ma2 <- matrix(0,VC$gp2,VC$gp2) 
+    if(VC$l.sp2 == 0) EQ2P <- adiag(ma2)    
+    
+    if(VC$l.sp2 != 0){
+    ind <- (l.sp1 + 1):(l.sp1 + VC$l.sp2)
+    S2 <- mapply("*", qu.mag$Ss[ind], sp[ind], SIMPLIFY=FALSE)
+    S2 <- do.call(adiag, lapply(S2, unlist))
+    EQ2P <- adiag(ma2, S2)
+                   }
+                            
 
-    ma1 <- matrix(0,VC$gp1,VC$gp1) 
-    ma2 <- matrix(0,VC$gp2,VC$gp2)
+if(!is.null(VC$gp3)){
 
-    if(length(VC$pPen1)!=0){ indP1 <- qu.mag$off[1]:(qu.mag$off[1]+qu.mag$rank[1]-1)
-                          dimP1 <- length(indP1)
-                          ma1[indP1,indP1] <- S[1:dimP1,1:dimP1]
-                                } 
-    if(length(VC$pPen2)!=0){ 
-                          indP2 <- (qu.mag$off[VC$l.sp1+1]-VC$X1.d2):(-VC$X1.d2+qu.mag$off[VC$l.sp1+1]+qu.mag$rank[VC$l.sp1+1]-1)
-                          dimP2 <- length(indP2)
-                          ma2[indP2,indP2] <- S[(dimP1+1):(length(indP2)+dimP1),(dimP1+1):(length(indP2)+dimP1)]
-                                }                                 
+  EQ4P <- EQ5P <- EQ6P <- NULL 
+ 
+    ma3 <- matrix(0,VC$gp3,VC$gp3) 
+    if(VC$l.sp3 == 0) EQ3P <- adiag(ma3)    
     
-    lP1 <- length(VC$pPen1); lP2 <- length(VC$pPen2) 
-    
-    if((lP1!=0 && VC$l.sp1>1) || (lP1==0 && VC$l.sp1>0)) S1 <- S[(dimP1+1):(dimP1+VC$X1.d2-VC$gp1),(dimP1+1):(dimP1+VC$X1.d2-VC$gp1)]
-    if((lP2!=0 && VC$l.sp2>1) || (lP2==0 && VC$l.sp2>0)){dS1 <- dim(S1)[2]; if(dS1==1) dS1 <- 0; 
-                                                   S2 <- S[(dimP1+dimP2+dS1+1):dim(S)[2],(dimP1+dimP2+dS1+1):dim(S)[2]]}
-    
-    lS1 <- length(S1); lS2 <- length(S2) 
-    
-    if(lS1==1 && lS2==1) S.h <- adiag(ma1, ma2, dzer)
-    if(lS1 >1 && lS2==1) S.h <- adiag(ma1, S1, ma2, dzer)
-    if(lS1==1 && lS2 >1) S.h <- adiag(ma1, ma2, S2, dzer)
-    if(lS1 >1 && lS2 >1) S.h <- adiag(ma1, S1, ma2, S2, dzer)
+    if(VC$l.sp3 != 0){
+    ind <- (l.sp1 + VC$l.sp2 + 1):(l.sp1 + VC$l.sp2 + VC$l.sp3)
+    S3 <- mapply("*", qu.mag$Ss[ind], sp[ind], SIMPLIFY=FALSE)
+    S3 <- do.call(adiag, lapply(S3, unlist))
+    EQ3P <- adiag(ma3, S3)
+                   }
         
-   
-   S.h1 <- 0.5*crossprod(params,S.h)%*%params
-   S.h2 <- S.h%*%params
-   
-   list(S.h = S.h, S.h1 = S.h1, S.h2 = S.h2)
-   
-   
+    
+    if(!is.null(VC$gp4)){
+    
+    ma4 <- matrix(0,VC$gp4,VC$gp4) 
+    if(VC$l.sp4 == 0) EQ4P <- adiag(ma4)    
+    
+    if(VC$l.sp4 != 0){
+    ind <- (l.sp1 + VC$l.sp2 + VC$l.sp3 + 1):(l.sp1 + VC$l.sp2 + VC$l.sp3 + VC$l.sp4)
+    S4 <- mapply("*", qu.mag$Ss[ind], sp[ind], SIMPLIFY=FALSE)
+    S4 <- do.call(adiag, lapply(S4, unlist))
+    EQ4P <- adiag(ma4, S4)
+                   }
+    
+    
+                        }
+                        
+	    if(!is.null(VC$gp5)){
+	    
+	    ma5 <- matrix(0,VC$gp5,VC$gp5) 
+	    if(VC$l.sp5 == 0) EQ5P <- adiag(ma5)    
+	    
+	    if(VC$l.sp5 != 0){
+	    ind <- (l.sp1 + VC$l.sp2 + VC$l.sp3 + VC$l.sp4 + 1):(l.sp1 + VC$l.sp2 + VC$l.sp3 + VC$l.sp4 + VC$l.sp5)
+	    S5 <- mapply("*", qu.mag$Ss[ind], sp[ind], SIMPLIFY=FALSE)
+	    S5 <- do.call(adiag, lapply(S5, unlist))
+	    EQ5P <- adiag(ma5, S5)
+	                     }    
+                                }
+                                
+}else{
+
+    if(VC$margins[2] %in% c("N", "NB", "PIG", "BB", "NBII", "WARING", "ZABI", "ZIBI", "ZALG", "ZAP", "ZIP", "ZIP2", "G")) 
+      {EQ3P <- 0; EQ4P <- 0;    EQ5P <- NULL  }
+    if(VC$margins[2] %in% c("P", "BI", "GEOM", "LG", "YULE" ))                   
+      {EQ3P <- 0; EQ4P <- NULL; EQ5P <- NULL  }
+    if(VC$margins[2] %in% c("D", "S", "ZIBB", "ZABB", "ZANBI", "ZINBI", "ZIPIG"))              
+      {EQ3P <- 0; EQ4P <- 0;    EQ5P <- 0     }
+
+
+}
+
+
+
+    if( eq1 == "no" ) {
+    
+ 
+    if(VC$margins[2] %in% c("N", "NB", "PIG", "BB", "NBII", "WARING", "ZABI", "ZIBI", "ZALG", "ZAP", "ZIP", "ZIP2", "G")) EQ4P <- EQ5P <- NULL  
+    if(VC$margins[2] %in% c("P", "BI", "GEOM", "LG", "YULE"))                                                             EQ3P <- EQ4P <- EQ5P <- NULL  
+    if(VC$margins[2] %in% c("D", "S", "ZIBB", "ZABB", "ZANBI", "ZINBI", "ZIPIG"))                                         EQ5P <- NULL
+    
+    
+    
+    S.h <- adiag(EQ2P, EQ3P, EQ4P, EQ5P)
+    
+    
+    
+    
+    } else S.h <- adiag(EQ1P, EQ2P, EQ3P, EQ4P, EQ5P)
+    
+    
+    S.h1 <- 0.5*crossprod(params,S.h)%*%params
+    S.h2 <- S.h%*%params
+    
+    list(S.h = S.h, S.h1 = S.h1, S.h2 = S.h2)
    
          }
-
-
 
 
 

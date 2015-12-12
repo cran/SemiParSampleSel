@@ -1,6 +1,12 @@
-export(bitsgHs, est.aver, print.est.aver,
-fit.SemiParSampleSel,fit.SemiParSampleSel1,
-ghss,
+export(bitsgHs, 
+aver, 
+print.aver,
+fit.SemiParSampleSel,
+ghss, 
+ghssD,
+ghssDuniv,
+copulaBitsD,
+marginBitsD,
 logLik.SemiParSampleSel,
 plot.SemiParSampleSel,
 predict.SemiParSampleSel,
@@ -8,11 +14,17 @@ print.SemiParSampleSel,
 print.summary.SemiParSampleSel,
 S.m,
 SemiParSampleSel,
-ss.checks,
+conv.check,
+post.check,
+resp.check,
 st.theta.star,
 summary.SemiParSampleSel,
 theta.tau,
-working.comp)
+working.comp, 
+VuongClarke)
+
+
+
 
 import(copula,mgcv,gamlss.dist)
 importFrom(mvtnorm,rmvnorm)
@@ -21,7 +33,26 @@ importFrom(magic,adiag)
 importFrom(Matrix,bdiag,Matrix)
 importFrom(VGAM,pbinorm,dbinorm)
 
+
+importFrom(graphics, axTicks, abline, hist, lines, par, polygon, xspline, filled.contour) 
+importFrom(grDevices, cm.colors, gray, heat.colors, terrain.colors, topo.colors, dev.new)   
+importFrom(stats, dgamma, qgamma, dlnorm, dlogis, dnorm, density, cor, as.formula, aggregate.data.frame, integrate, 
+           model.matrix, na.omit, na.pass, pbinom, pchisq, pgamma, plnorm, plogis, pnorm, printCoefmat,
+           qnorm, qqnorm, qqline, qqplot, quantile, residuals, rnorm, sd, uniroot, update, var, weighted.mean,
+	         update.formula, predict, dpois, ppois, lm, glm, qlogis, runif, Gamma, ppoints)
+importFrom(utils, getFromNamespace)
+
+
+
+
+
+
+
 S3method(plot, SemiParSampleSel)
 S3method(summary, SemiParSampleSel)
 S3method(print, SemiParSampleSel)
 S3method(print, summary.SemiParSampleSel)
+S3method(logLik, SemiParSampleSel)
+S3method(predict, SemiParSampleSel)
+S3method(print, aver)
+

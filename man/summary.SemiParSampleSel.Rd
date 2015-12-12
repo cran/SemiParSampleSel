@@ -9,8 +9,9 @@ It takes a fitted \code{SemiParSampleSel} object produced by \code{SemiParSample
 
 \usage{
 
-\method{summary}{SemiParSampleSel}(object, n.sim = 1000, s.meth = "svd", prob.lev = 0.05, ...)
-
+\method{summary}{SemiParSampleSel}(object, n.sim=1000, s.meth="svd", prob.lev=0.05, 
+                  cm.plot = FALSE, xlim = c(-3, 3), ylab = "Outcome margin",
+                  xlab = "Selection margin", ...)
 
 }
 
@@ -26,6 +27,14 @@ to calculate `confidence' intervals for \eqn{\theta}{\theta} and \eqn{\phi}{\phi
 
 \item{prob.lev}{Probability of the left and right tails of the posterior distribution used for interval calculations.} 
 
+\item{cm.plot}{If \code{TRUE} display contour plot of the model based on average parameter values.}
+
+\item{xlim}{Maximum and minimum values of the selection margin to be displayed by \code{cm.plot}.}
+
+\item{ylab}{Label of the outcome margin axis.}
+
+\item{xlab}{Label of the selection margin axis.}
+
 \item{...}{Other arguments.}
 
 }
@@ -33,7 +42,7 @@ to calculate `confidence' intervals for \eqn{\theta}{\theta} and \eqn{\phi}{\phi
 
 \details{ 
 
-As in the package \code{mgcv}, based on the results of Marra and Wood (2012), `Bayesian p-values' are returned for the smooth terms. These have 
+Using a low level function in \code{mgcv}, based on the results of Marra and Wood (2012), `Bayesian p-values' are returned for the smooth terms. These have 
 better frequentist performance than their frequentist counterpart. Let \eqn{\hat{\bf f}}
 and \eqn{{\bf V}_f}{V_f} denote the vector of values of a smooth term evaluated at the original covariate values and the
 corresponding Bayesian covariance matrix, and let \eqn{{\bf V}_f^{r-}}{V_f^{r-}} denote 
@@ -44,7 +53,7 @@ biased rounding of the estimated degrees of freedom.
 
 Covariate selection can also be achieved using a single penalty shrinkage approach as shown in Marra and Wood (2011). 
 
-See Wojtys et al. (submitted) for further details.
+See Wojtys et al. (in press) for further details.
 
 }
 
@@ -53,20 +62,19 @@ See Wojtys et al. (submitted) for further details.
 \value{
 
 \item{tableP1}{Table containing parametric estimates, their standard errors, z-values and p-values for equation 1.}
-\item{tableP2}{As above but for equation 2.}
+\item{tableP2,tableP3,tableP4,tableP5}{As above but for equation 2, and equations 3, 4 and 5 if present.}
 \item{tableNP1}{Table of nonparametric summaries for each smooth component including estimated degrees of freedom, estimated rank, 
                 approximate Wald statistic for testing the null hypothesis that the smooth term is zero and corresponding p-value, for equation 1.}
-\item{tableNP2}{As above but for equation 2.}
+\item{tableNP2,tableNP3,tableNP4,tableNP5}{As above but for equation 2 and equations 3, 4 and 5 if present.}
 \item{n}{Sample size.}
 \item{n.sel}{Number of selected observations.}
 \item{sigma}{Estimated standard deviation for the response of the outcome equation in the case of normal marginal distribution of the outcome.}
 \item{shape}{Estimated shape parameter for the response of the outcome equation in the case of gamma marginal distribution of the outcome.}
 \item{phi}{Estimated dispersion for the response of the outcome equation.} 
 \item{theta}{Estimated coefficient linking the two equations.} 
-\item{formula1}{Formula used for equation1.}
-\item{formula2}{Formula used for equation2.}
-\item{l.sp1}{Number of smooth components in equation 1.}
-\item{l.sp2}{Number of smooth components in equation 2.}
+\item{nu}{Estimated coefficient for the response of the outcome equation when the Delaporte and Sichel distributions are employed.} 
+\item{formula1,formula2,formula3,formula4,formula5}{Formulas used for equations 1, 2, 3, 4 and 5.}
+\item{l.sp1,l.sp2,l.sp3,l.sp4,l.sp5}{Number of smooth components in equations 1, 2, 3, 4 and 5.}
 \item{t.edf}{Total degrees of freedom of the estimated sample selection model.}
 \item{CIsig}{`Confidence' interval for \eqn{\sigma}{\sigma} in the case of normal marginal distribution of the outcome.}
 \item{CIshape}{`Confidence' interval for the shape parameter in the case of gamma distribution of the outcome.}
@@ -84,7 +92,7 @@ Marra G. and Wood S.N. (2011), Practical Variable Selection for Generalized Addi
 
 Marra G. and Wood S.N. (2012), Coverage Properties of Confidence Intervals for Generalized Additive Model Components. \emph{Scandinavian Journal of Statistics}, 39(1), 53-74.
 
-Wojtys M., Marra G. and Radice R. (submitted), Copula Regression Spline Sample Selection Models: The R Package SemiParSampleSel.
+Wojtys M., Marra G. and Radice R. (in press), Copula Regression Spline Sample Selection Models: The R Package SemiParSampleSel. \emph{Journal of Statistical Software}.
 
 }
 

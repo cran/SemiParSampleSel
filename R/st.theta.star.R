@@ -24,7 +24,10 @@ stme <- "Wrong initial value of association parameter."
   
   
   if(BivD=="F") {
-        if(is.null(start.theta)) { a.theta <- iRho(frankCopula(), co); a.theta <- ifelse(abs(a.theta)<15,a.theta,sign(a.theta)*15) }
+        if(is.null(start.theta)) { 
+	co <- ifelse(co > 0.999, 0.999, co)
+        co <- ifelse(co < -0.999, -0.999, co)
+        a.theta <- iRho(frankCopula(), co); a.theta <- ifelse(abs(a.theta)<15,a.theta,sign(a.theta)*15) }
         else a.theta <- start.theta
   }  
   
@@ -40,7 +43,7 @@ stme <- "Wrong initial value of association parameter."
 
   if(BivD=="AMH") {
         if(is.null(start.theta)) {
-              co <- ifelse( co > -0.18, co, -0.18 ); co.m <- ifelse( co < 0.33, co, 0.33 )   
+              co <- ifelse( co > -0.18, co, -0.18 ); co <- ifelse( co < 0.33, co, 0.33 )   
               a.theta <- iTau(amhCopula(),co); a.theta <- ifelse( abs(a.theta) < 0.9, a.theta, sign(a.theta)*0.9 ); a.theta <- atanh(a.theta)
         }
         else { if(abs(start.theta)<=1) a.theta <- atanh(start.theta) else stop(stme) }

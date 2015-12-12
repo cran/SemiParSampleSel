@@ -4,7 +4,7 @@
 \title{Internal Function}
 
 \description{It provides the quantites needed to calculate the log-likelihood, gradient and Hessian matrix for 
-penalized or unpenalized maximum likelihood optimization, for several copula models.}
+penalized or unpenalized maximum likelihood optimization, for a number of copula models.}
 
 
 

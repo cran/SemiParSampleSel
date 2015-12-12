@@ -1,4 +1,3 @@
-
 citEntry(
   entry="Article",
   title="Estimation of a Regression Spline Sample Selection Model",
@@ -9,4 +8,13 @@ citEntry(
   year="2013", 
   author="Marra G. and Radice R.",
   textVersion="Marra G. and Radice R. (2013), Estimation of a Regression Spline Sample Selection Model, Computational Statistics and Data Analysis, 61, 158-173."
+ )
+
+citEntry(
+  entry="Article",
+  title="Copula Regression Spline Sample Selection Models: The R Package SemiParSampleSel",
+  journal="Journal of Statistical Software",
+  year="2015", 
+  author="Marra G. and Radice R.",
+  textVersion="Wojtys M., Marra G. and Radice R. (2015), Copula Regression Spline Sample Selection Models: The R Package SemiParSampleSel, Journal of Statistical Software."
  )

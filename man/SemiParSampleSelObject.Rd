@@ -15,7 +15,7 @@
 
 \item{gam1}{Univariate fit for selection equation. See the documentation of \code{mgcv} for full details.}
 
-\item{gam2}{Univariate fit for outcome equation.}
+\item{gam2,gam3,gam4,gam5}{Univariate fit for the outcome equation and equations 3, 4 and 5 when present.}
 
 \item{gam2.1}{Univariate fit for equation 2, estimated using an adaptation of the Heckman sample selection correction procedure.}
 
@@ -32,8 +32,8 @@
 \item{iter.inner}{Number of iterations performed inside smoothing parameter estimation step.}
 
 \item{start.v}{Starting values for all model parameters of the semiparametric sample selection algorithm. These are obtained using the  
-               Heckman sample selection 
-               correction approach when starting values are not provided.}
+               Heckman sample selection correction approach when starting values are not provided and the dependence parameter is not
+               specified as a function of a linear predictor.}
 
 \item{phi}{Estimated dispersion for the response of the outcome equation. In the normal bivariate case, this corresponds to the variance. }
 
@@ -49,17 +49,11 @@
 
 \item{n.sel}{Number of selected observations.}
 
-\item{X1}{Design matrix associated with the first linear predictor.}
+\item{X1,X2,X3,X4,X5}{Design matrices associated with the linear predictors.}
 
-\item{X2}{Design matrix associated with the second linear predictor.} 
+\item{X1.d2,X2.d2,X3.d2,X4.d2,X5.d2}{Number of columns of the design matrices.}
 
-\item{X1.d2}{Number of columns of the design matrix for equation 1. This is used for internal calculations.}
-
-\item{X2.d2}{Number of columns of the design matrix for equation 2.} 
-
-\item{l.sp1}{Number of smooth components in equation 1.}
-
-\item{l.sp2}{Number of smooth components in equation 2.}
+\item{l.sp1,l.sp2,l.sp3,l.sp4,l.sp5}{Number of smooth components in the equations.}
 
 \item{He}{Penalized hessian.}
 
@@ -79,8 +73,7 @@
 
 \item{conv.sp}{If \code{TRUE} then the smoothing parameter selection algorithm converged.}
                 
-\item{wor.c}{Working model quantities given by the square root of 
-             the weight matrix times the pseudo-data vector and design matrix, \code{rW.Z} and \code{rW.X}.}                
+\item{wor.c}{Working model quantities.}                
 
 \item{eta1,eta2}{Estimated linear predictors for the two equations.}
 
@@ -92,9 +85,6 @@
             estimates.}
 
 \item{fp}{If \code{TRUE}, then a fully parametric model was fitted.} 
-
-\item{pPen1, pPen2}{List specifying any penalties to be applied to the parametric model 
-                    terms of the model equations.}
 
 \item{X2s}{Full design matrix of outcome equation.}
 
@@ -115,7 +105,7 @@ Maintainer: Giampiero Marra \email{giampiero.marra@ucl.ac.uk}
 
 
 \seealso{
-\code{\link{est.aver}}, \code{\link{SemiParSampleSel}}, \code{\link{plot.SemiParSampleSel}}, \code{\link{predict.SemiParSampleSel}}, \code{\link{summary.SemiParSampleSel}}
+\code{\link{aver}}, \code{\link{SemiParSampleSel}}, \code{\link{plot.SemiParSampleSel}}, \code{\link{predict.SemiParSampleSel}}, \code{\link{summary.SemiParSampleSel}}
 }
 
 

@@ -5,7 +5,9 @@
 \title{Semiparametric Sample Selection Modelling with Continuous or Discrete Response}
 
 \description{\code{SemiParSampleSel} provides a function for fitting continuous and discrete response (copula) sample selection models 
-with parametric and nonparametric predictor effects. Several bivariate copula distributions are supported. Smoothness selection is
+with parametric and nonparametric predictor effects. Several bivariate copula distributions are supported. The dependence parameter of 
+the copula distribution as well as the shape and dispersion parameters of the outcome distribution can be specified as 
+functions of semiparametric predictors as well. Smoothness selection is
 achieved automatically and interval calculations are based on a Bayesian approach.
 }
 
@@ -23,11 +25,16 @@ The depedence between the selection and outcome equations is modelled through th
 
 Confidence intervals for smooth components and nonlinear functions of the model
 parameters are derived using a Bayesian approach. Approximate p-values for testing 
-individual smooth terms for equality to the zero function are also provided. Functions \code{\link{plot.SemiParSampleSel}} and 
+individual smooth terms for equality to the zero function are also provided and based on the approach
+implemented in \code{mgcv}. Functions \code{\link{plot.SemiParSampleSel}} and 
 \code{\link{summary.SemiParSampleSel}} extract such information from a fitted \code{\link{SemiParSampleSel}} object. Model/variable 
 selection is also possible via the use of shrinakge smoothers or information criteria. 
 
-Function \code{\link{est.aver}} calculates the average outcome corrected for non-random sample selection.
+Function \code{\link{aver}} calculates the average outcome corrected for non-random sample selection.
+
+If it makes sense, the dependence parameter of 
+the copula function as well as the shape and dispersion parameters of the outcome distribution can be specified as 
+functions of semiparametric predictors.
 
 }
 
@@ -44,7 +51,7 @@ Maintainer: Giampiero Marra \email{giampiero.marra@ucl.ac.uk}
 
 Marra G. and Radice R. (2013), Estimation of a Regression Spline Sample Selection Model. \emph{Computational Statistics and Data Analysis}, 61, 158-173.
 
-Wojtys M., Marra G. and Radice R. (submitted), Copula Regression Spline Sample Selection Models: The R Package SemiParSampleSel.
+Wojtys M., Marra G. and Radice R. (in press), Copula Regression Spline Sample Selection Models: The R Package SemiParSampleSel. \emph{Journal of Statistical Software}.
 
 }
 

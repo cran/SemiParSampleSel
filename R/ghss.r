@@ -1,15 +1,44 @@
 ghss <- function(params, dat, VC, qu.mag=NULL, sp=NULL){
 
-  eta1 <- VC$X1%*%params[1:VC$X1.d2]  
-  eta2 <- VC$X2%*%params[(VC$X1.d2+1):(VC$X1.d2+VC$X2.d2)]   
-  teta.st <- params[(VC$X1.d2+VC$X2.d2+2)]
+  etatheta <- etasqv <- etak <- NULL
+
+  X1 <- as.matrix(VC$X1)
+  X2 <- as.matrix(VC$X2)
+  
+  if(!is.null(VC$X3)){
+  X3 <- as.matrix(VC$X3)
+  X4 <- as.matrix(VC$X4)
+  }
+
+
+  eta1 <- X1%*%params[1:VC$X1.d2]  
+  eta2 <- X2%*%params[(VC$X1.d2+1):(VC$X1.d2+VC$X2.d2)]   
+  
+  if(is.null(VC$X4))  teta.st <- params[(VC$X1.d2+VC$X2.d2+2)]
+  if(!is.null(VC$X4)) teta.st <- etatheta <- X4%*%params[(VC$X1.d2+VC$X2.d2+VC$X3.d2+1):(VC$X1.d2+VC$X2.d2+VC$X3.d2+VC$X4.d2)]
+
   eps <- sqrt(.Machine$double.eps)
 
-  if(VC$BivD %in% c("N","FGM","AMH") ){ teta <- tanh(teta.st); if(teta %in% c(-1,1)) teta <- sign(teta)*0.9999999 }
-  if(VC$BivD=="F")                      teta <- teta.st + eps
+  if(VC$BivD %in% c("N","FGM","AMH") ){ 
+                         teta <- tanh(teta.st)
+		         teta <- ifelse(teta < -0.9999999, -0.9999999, teta)
+                         teta <- ifelse(teta > 0.9999999 ,  0.9999999, teta)
+  }
+ 
+  
+  if( !(VC$BivD %in% c("F","N","FGM","AMH")) ) {
+  
+    teta.st <- ifelse( teta.st > 709, 709, teta.st )  
+    teta.st <- ifelse( teta.st < -20, -20, teta.st )  
+  
+  }
+  
+  if(VC$BivD=="F")                                      teta <- teta.st + eps
   if(VC$BivD %in% c("C0", "C90", "C180", "C270") )      teta <- exp(teta.st) + eps
   if(VC$BivD %in% c("J0", "J90", "J180", "J270") )      teta <- exp(teta.st) + 1 + eps 
   if(VC$BivD %in% c("G0", "G90", "G180", "G270") )      teta <- exp(teta.st) + 1 
+
+
 
   i1 <- dat[,1]
   i0 <- 1-i1
@@ -24,7 +53,12 @@ ghss <- function(params, dat, VC, qu.mag=NULL, sp=NULL){
 if(VC$margins[2]=="N"){
 
 
-    sqv.st <- params[(VC$X1.d2+VC$X2.d2+1)]
+    if(is.null(VC$X3))  sqv.st <- params[(VC$X1.d2+VC$X2.d2+1)]
+    if(!is.null(VC$X3)) sqv.st <- etasqv <- X3%*%params[(VC$X1.d2+VC$X2.d2+1):(VC$X1.d2+VC$X2.d2+VC$X3.d2)]
+
+    sqv.st <- ifelse( sqv.st > 709, 709, sqv.st )  
+    sqv.st <- ifelse( sqv.st < -20, -20, sqv.st )  
+
     sqv <- exp(sqv.st)
 
 
@@ -144,7 +178,12 @@ if(VC$margins[2]=="N"){
 
 if(VC$margins[2]=="G"){
 
-    k.st <- params[(VC$X1.d2+VC$X2.d2+1)]
+    if(is.null(VC$X3))  k.st <- params[(VC$X1.d2+VC$X2.d2+1)]
+    if(!is.null(VC$X3)) k.st <- etak <- X3%*%params[(VC$X1.d2+VC$X2.d2+1):(VC$X1.d2+VC$X2.d2+VC$X3.d2)]
+
+    k.st <- ifelse( k.st > 709, 709, k.st )  
+    k.st <- ifelse( k.st < -20, -20, k.st )  
+
     k <- exp(k.st)
     i2 <- dat[,2]
     F2 <- pgamma(i2,shape=k,rate=k*exp(-eta2));		
@@ -156,20 +195,23 @@ if(VC$margins[2]=="G"){
 
     ye <- i2*exp(-eta2)
 
-    G <- gamma(k)
+#    G <- gamma(k)
     psi <- psigamma(k)
     psiprim <- psigamma(k,deriv=1)
-    fun1 <- function(t,k) { t^(k-1)*exp(-t)*log(t) }
-    Gkf  <- function(k, y) { sapply(y, function(y) integrate(fun1,y,Inf,k)$value ) }
-    Gk   <- Gkf(k,k*ye)
-    fun2 <- function(t,k){t^(k-1)*exp(-t)*(log(t))^2}
-    G2kf <- function(k, y) { sapply(y, function(y) integrate(fun2,y,Inf,k)$value ) }
-    G2k  <- G2kf(k,k*ye)
-    dF2k <- i2*f2*k^(-1)+psi*(1-F2)-Gk/G
+#    fun1 <- function(t,k) { t^(k-1)*exp(-t)*log(t) }
+#    Gkf  <- function(k, y) { sapply(y, function(y) integrate(fun1,y,Inf,k)$value ) } # fingers crossed here!
+#    Gk   <- Gkf(k,k*ye)
+#    fun2 <- function(t,k){t^(k-1)*exp(-t)*(log(t))^2}
+#    G2kf <- function(k, y) { sapply(y, function(y) integrate(fun2,y,Inf,k)$value ) }
+#    G2k  <- G2kf(k,k*ye)
+#    dF2k <- i2*f2*k^(-1)+psi*(1-F2)-Gk/G
     df2kbyf2 <- -psi+log(k*i2)+1-eta2-ye;  
     df2kbyf2[i1==0]=0;
-    d2F2k <-i2*k^(-1)*f2*(2*df2kbyf2+ye-1-1/k) + (1-F2)*(psiprim-psi^2) + 2*psi*Gk*G^(-1)-G2k/G 
-
+#    d2F2k <-i2*k^(-1)*f2*(2*df2kbyf2+ye-1-1/k) + (1-F2)*(psiprim-psi^2) + 2*psi*Gk*G^(-1)-G2k/G 
+    fp <- function(s) pgamma(i2, shape=s, rate=s*exp(-eta2))
+    eps <- 1e-06
+    dF2k <- (fp(k+eps/2) - fp(k-eps/2))/eps
+    d2F2k <- (fp(k+2*eps) - fp(k+eps) - fp(k+eps) + fp(k))/(eps*eps)
 
 
     bits <- bitsgHs(cop=VC$BivD,margin=VC$margins[2],i1=i1,F1=F1,F2=F2,f2=f2,eta1=eta1,ph=ph,teta=teta,ver=0)
@@ -211,14 +253,16 @@ if(VC$margins[2]=="G"){
 
 
 
-  H11 <- crossprod(VC$X1*c(d2l.11),VC$X1)
-  H12 <- crossprod(VC$X1*c(d2l.12),VC$X2) 
-  H13 <- t(t(rowSums(t(VC$X1*c(d2l.13)))))
-  H14 <- t(t(rowSums(t(VC$X1*c(d2l.14)))))
+if( is.null(VC$X3) && is.null(VC$X4)  ){
 
-  H22 <- crossprod(VC$X2*c(d2l.22),VC$X2) 
-  H23 <- t(t(rowSums(t(VC$X2*c(d2l.23)))))
-  H24 <- t(t(rowSums(t(VC$X2*c(d2l.24)))))
+  H11 <- crossprod(X1*c(d2l.11),X1)
+  H12 <- crossprod(X1*c(d2l.12),X2) 
+  H13 <- t(t(rowSums(t(X1*c(d2l.13)))))
+  H14 <- t(t(rowSums(t(X1*c(d2l.14)))))
+
+  H22 <- crossprod(X2*c(d2l.22),X2) 
+  H23 <- t(t(rowSums(t(X2*c(d2l.23)))))
+  H24 <- t(t(rowSums(t(X2*c(d2l.24)))))
 
   H <- rbind( cbind( H11    , H12    , H13  ,  H14 ), 
               cbind( t(H12) , H22    , H23  ,  H24 ),
@@ -226,16 +270,50 @@ if(VC$margins[2]=="G"){
               cbind( t(H14) , t(H24) , sum(d2l.34), sum(d2l.44) )
             ) 
 
-  res <- -sum(l.par)
+ 
 
-  G   <- -c(colSums( c(dl.1)*VC$X1 ) ,
-            colSums( c(dl.2)*VC$X2 )    ,
+  G   <- -c(colSums( c(dl.1)*X1 ) ,
+            colSums( c(dl.2)*X2 )    ,
             sum( dl.3 ) ,  
             sum( dl.4 )   )
+            
+            
+} else{
+
+
+  H11 <- crossprod(X1*c(d2l.11),X1)
+  H12 <- crossprod(X1*c(d2l.12),X2) 
+  H13 <- crossprod(X1*c(d2l.13),X3) 
+  H14 <- crossprod(X1*c(d2l.14),X4) 
+
+  H22 <- crossprod(X2*c(d2l.22),X2) 
+  H23 <- crossprod(X2*c(d2l.23),X3) 
+  H24 <- crossprod(X2*c(d2l.24),X4) 
+  
+  H33 <- crossprod(X3*c(d2l.33),X3) 
+  H34 <- crossprod(X3*c(d2l.34),X4) 
+  H44 <- crossprod(X4*c(d2l.44),X4)   
+  
+
+  H <- rbind( cbind( H11    , H12    , H13  ,  H14 ), 
+              cbind( t(H12) , H22    , H23  ,  H24 ),
+              cbind( t(H13) , t(H23) , H33  ,  H34 ) ,
+              cbind( t(H14) , t(H24) , t(H34), H44 )
+            ) 
+
+  G   <- -c(colSums( c(dl.1)*X1 ) ,
+            colSums( c(dl.2)*X2 ) ,
+            colSums( c(dl.3)*X3 ) ,  
+            colSums( c(dl.4)*X4 )  )
+
+
+}
 
 
 
-if( ( VC$l.sp1==0 && VC$l.sp2==0 ) || VC$fp==TRUE) ps <- list(S.h = 0, S.h1 = 0, S.h2 = 0) else ps <- pen(params, qu.mag, sp, VC)
+ res <- -sum(l.par)
+
+if( ( VC$l.sp1==0 && VC$l.sp2==0 && VC$l.sp3==0 && VC$l.sp4==0 && VC$l.sp5==0 ) || VC$fp==TRUE) ps <- list(S.h = 0, S.h1 = 0, S.h2 = 0) else ps <- pen(params, qu.mag, sp, VC)
    
    
   S.res <- res
@@ -243,7 +321,8 @@ if( ( VC$l.sp1==0 && VC$l.sp2==0 ) || VC$fp==TRUE) ps <- list(S.h = 0, S.h1 = 0,
   G   <- G + ps$S.h2
   H   <- H + ps$S.h  
 
-  list(value=res, gradient=G, hessian=H, S.h=ps$S.h, S.h2 = ps$S.h2, l=S.res, eta1=eta1, eta2=eta2, 
+  list(value=res, gradient=G, hessian=H, S.h=ps$S.h, S.h2 = ps$S.h2, l=S.res, eta1=eta1, eta2=eta2,   
+       etatheta = etatheta, etasqv = etasqv, etak = etak,
        dl.dbe1=dl.1, dl.dbe2=dl.2, l.par=l.par,
        dl.dsqv.st=dl.3,
        dl.dcor.st=dl.4, 

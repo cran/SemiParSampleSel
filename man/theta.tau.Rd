@@ -3,8 +3,7 @@
 
 \title{Internal Function}
 
-\description{Given an estimated value of \eqn{\theta^{*}}{\theta^{*}}, this function computes \eqn{\theta}{\theta} using a proper 
-transformation. }
+\description{Given an estimated value of \eqn{\theta^{*}}{\theta^{*}}, this function computes \eqn{\theta}{\theta}.}
 
 
 

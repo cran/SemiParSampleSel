@@ -4,7 +4,7 @@
 \title{Internal Function}
 
 \description{It efficiently calculates the working model quantities needed to implement the automatic multiple smoothing parameter estimation 
-procedure by exploiting the band structure of the working linear model.}
+procedure by exploiting a result which leads to very fast and stable calculations.}
 
 
 
@@ -19,9 +19,7 @@ Maintainer: Giampiero Marra \email{giampiero.marra@ucl.ac.uk}
 
 \references{
 
-Marra G. and Radice R. (2013), Estimation of a Regression Spline Sample Selection Model. \emph{Computational Statistics and Data Analysis}, 61, 158-173.
-
-Wojtys M., Marra G. and Radice R. (submitted), Copula Regression Spline Sample Selection Models: The R Package SemiParSampleSel.
+Wojtys M., Marra G. and Radice R. (in press), Copula Regression Spline Sample Selection Models: The R Package SemiParSampleSel. \emph{Journal of Statistical Software}.
 
 }
 

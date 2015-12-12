@@ -3,7 +3,7 @@
 
 \title{Internal Function}
 
-\description{It computes a starting value for dependence parameter \eqn{\theta}{\theta} and transforms it depending on the copula used.}
+\description{It computes a starting value for dependence parameter \eqn{\theta}{\theta} and transforms it depending on the copula employed.}
 
 
 \author{
