@@ -10,11 +10,28 @@ citEntry(
   textVersion="Marra G. and Radice R. (2013), Estimation of a Regression Spline Sample Selection Model, Computational Statistics and Data Analysis, 61, 158-173."
  )
 
-citEntry(
-  entry="Article",
-  title="Copula Regression Spline Sample Selection Models: The R Package SemiParSampleSel",
-  journal="Journal of Statistical Software",
-  year="2015", 
-  author="Marra G. and Radice R.",
-  textVersion="Wojtys M., Marra G. and Radice R. (2015), Copula Regression Spline Sample Selection Models: The R Package SemiParSampleSel, Journal of Statistical Software."
- )
+citEntry(entry = "Article",
+  title        = "Copula Regression Spline Sample Selection Models: The {R} Package {SemiParSampleSel}",
+  author       = c(person(given = "Ma{\\l}gorzata",
+                          family = "Wojty{\\'s}",
+                          email = "malgorzata.wojtys@plymouth.ac.uk"),
+                   person(given = "Giampiero",
+                          family = "Marra",
+                          email = "giampiero.marra@ucl.ac.uk"),
+                   person(given = "Rosalba",
+                          family = "Radice",
+                          email = "r.radice@bbk.ac.uk")),
+  journal      = "Journal of Statistical Software",
+  year         = "2016",
+  volume       = "71",
+  number       = "6",
+  pages        = "1--65",
+  doi          = "10.18637/jss.v071.i06",
+
+  header       = "To cite SemiParSampleSel in publications use:",
+  textVersion  =
+  paste("Malgorzata Wojtys, Giampiero Marra, Rosalba Radice (2016).",
+        "Copula Regression Spline Sample Selection Models: The R Package SemiParSampleSel.",
+        "Journal of Statistical Software, 71(6), 1-65.",
+        "doi:10.18637/jss.v071.i06")
+) 

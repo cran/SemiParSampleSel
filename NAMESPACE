@@ -25,13 +25,15 @@ VuongClarke)
 
 
 
-
 import(copula,mgcv,gamlss.dist)
 importFrom(mvtnorm,rmvnorm)
 importFrom(trust,trust)
 importFrom(magic,adiag)
 importFrom(Matrix,bdiag,Matrix)
 importFrom(VGAM,pbinorm,dbinorm)
+importFrom(VineCopula,BiCopPar2Tau)
+importFrom(matrixStats, rowQuantiles)
+
 
 
 importFrom(graphics, axTicks, abline, hist, lines, par, polygon, xspline, filled.contour) 

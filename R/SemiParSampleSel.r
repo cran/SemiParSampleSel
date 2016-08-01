@@ -524,6 +524,7 @@ if( (l.sp1!=0 || l.sp2!=0 || l.sp3!=0 || l.sp4!=0 || l.sp5!=0) ){
     nu <- plogis(fit$fit$argument["logi.nu"]); names(nu) <- NULL }
 
   theta.a <- theta
+  KendTau.a <- KendTau
   sigma.a <- sigma
   phi.a   <- phi
   #k.a     <- k
@@ -563,6 +564,7 @@ if( (l.sp1!=0 || l.sp2!=0 || l.sp3!=0 || l.sp4!=0 || l.sp5!=0) ){
   # need several averages here ... for summary function
 
   theta.a <- mean(as.numeric(theta))
+  KendTau.a <- mean(as.numeric(KendTau))
   sigma.a <- mean(as.numeric(sigma))
   phi.a   <- mean(as.numeric(phi))
 # k.a     <- mean(as.numeric(k))
@@ -592,7 +594,7 @@ if( (l.sp1!=0 || l.sp2!=0 || l.sp3!=0 || l.sp4!=0 || l.sp5!=0) ){
                  y1 = y1, y2 = y2, logLik = -fit$fit$l, fp = fp,
                  gp1 = gp1, gp2 = gp2, gp3 = gp3, gp4 = gp4, gp5 = gp5,               
                  X2s = X2s, magpp = fit$magpp,
-                 sigma.a = sigma.a, phi.a = phi.a, theta.a = theta.a, nu.a = nu.a, gamlss.fit = gamlss.fit,
+                 sigma.a = sigma.a, phi.a = phi.a, theta.a = theta.a, nu.a = nu.a, tau.a = KendTau.a, gamlss.fit = gamlss.fit,
                  edf = edf, edf11=edf1, R = R, Ve = Ve)
 
   class(L) <- "SemiParSampleSel"
