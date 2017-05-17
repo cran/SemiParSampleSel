@@ -1,6 +1,6 @@
-e1e12751bbe9635a0a55545b68109050 *ChangeLog
-da3a1a444f598b182f2790b716f14d9c *DESCRIPTION
-6f37e2bd21fd935e31c2e2ea33bb7a12 *NAMESPACE
+5d19f8ff991724826793790da7c95753 *ChangeLog
+90741f2416152eb724040e7f2fb8c296 *DESCRIPTION
+35efc22b1383799b291e94244d19cc9a *NAMESPACE
 4dea57daded948b6f0169a7da946d1e1 *R/S.m.r
 fd93d5e8aa24e410a0aed0852fc849a1 *R/SemiParSampleSel.r
 7f8ccc9662c050f2662a61d103599e08 *R/VuongClarke.r
@@ -24,13 +24,15 @@ ffde5998b1f5cc7fdb5b0b5655d56b61 *R/print.summary.SemiParSampleSel.r
 453484852e125d6a77f6909ae08fec0c *R/resp.check.R
 bfbc04b6f80b7385ebfe0483636d9122 *R/st.theta.star.R
 60eb45ea5a33084eb96a557c651a5811 *R/summary.SemiParSampleSel.r
-3e0c26d392954abe5d381b52aaa74475 *R/theta.tau.r
+a906f23ab75d16c021c05df9ecf46fb2 *R/theta.tau.r
 f82e3cd70506905c7a3196c9cc4202bf *R/working.comp.r
 53977e20556fd49f05b2bba67d527f8f *R/zzz.r
-538d7b30ac63581a06519eab5f071181 *inst/CITATION
+08537861052e21c1adebd61d2ab0bd7e *data/SOEP.RData
+bb7f117227d91346fbc19459c4ef66a7 *inst/CITATION
 df10bc1c79f410c9b26d345a6ca916e8 *man/S.m.Rd
+1e61e523709de097fee8e7e0158f2e79 *man/SOEP.Rd
 61874cc28b4a0499be1391b8b92c370c *man/SemiParSampleSel-package.Rd
-7b1b047564af41c0afd6ee0bc95f4015 *man/SemiParSampleSel.Rd
+f105b2df5ba9fa14de967cee2ccbac64 *man/SemiParSampleSel.Rd
 2b5a7c7ae3810a6dd0f003e501965934 *man/SemiParSampleSelObject.Rd
 465639360711841db1348d9333f9dc0a *man/VuongClarke.Rd
 c0b719e5e1a82d7b3c4e53bf695a4608 *man/aver.Rd
@@ -50,7 +52,7 @@ be38b5e03cbbd767273845efb0582b9f *man/ghssD.Rd
 b979d3eb562bd18e8ba60be179b1b765 *man/print.SemiParSampleSel.Rd
 4cbe2346fe1265124611e5c5269a731b *man/print.aver.Rd
 6c05c671a444d32b8ab901bfb25e2eb8 *man/print.summary.SemiParSampleSel.Rd
-41cf0684a1fb66ebc65d4362f6d73a49 *man/resp.check.Rd
+2f52629a040bfa87901c2f7cdbfbc72e *man/resp.check.Rd
 f13b0da19c9e5a5a5f20a8976f5b0893 *man/st.theta.star.Rd
 ba8ecbc1bda2139301c560d25de33512 *man/summary.SemiParSampleSel.Rd
 f745d2900621048cce006cc83885058c *man/theta.tau.Rd

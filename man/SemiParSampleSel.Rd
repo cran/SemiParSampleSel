@@ -211,6 +211,8 @@ BIC(out)
 aver(out)
 
 
+\dontrun{ 
+
 ## SEMIPARAMETRIC SAMPLE SELECTION MODEL
 
 ## "cr" cubic regression spline basis      - "cs" shrinkage version of "cr"
@@ -245,9 +247,6 @@ par(new = TRUE)
 plot(out$gam2, se = FALSE, col = "blue", ylim = c(-1, 0.8), ylab = "", rug = FALSE)
 
 
-
-
-\dontrun{ 
 
 ## SEMIPARAMETRIC SAMPLE SELECTION MODEL with association and dispersion parameters 
 ## depending on covariates as well

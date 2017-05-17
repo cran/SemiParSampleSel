@@ -48,6 +48,8 @@ library(SemiParSampleSel)
 ys <- rnorm(2000, mean=3, sd=1)
 resp.check(ys, margin = "N")
 
+\dontrun{
+
 # Generating gamma response with n = 2000
 ys <- rgamma(2000, shape=2, rate=3)
 resp.check(ys, margin = "G")
@@ -60,6 +62,7 @@ resp.check(ys, margin = "P")
 ys <- rNBI(2000, mu=3, sigma=1)
 resp.check(ys, margin = "NB")
 
+}
 
 
 }

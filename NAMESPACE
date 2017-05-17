@@ -31,7 +31,7 @@ importFrom(trust,trust)
 importFrom(magic,adiag)
 importFrom(Matrix,bdiag,Matrix)
 importFrom(VGAM,pbinorm,dbinorm)
-importFrom(VineCopula,BiCopPar2Tau)
+importFrom(CDVine,BiCopPar2Tau)
 importFrom(matrixStats, rowQuantiles)
 
 
